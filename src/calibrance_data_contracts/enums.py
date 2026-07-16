@@ -17,6 +17,7 @@ class SourceType(str, Enum):
     UCI_ROBOT_FAILURES = "uci_robot_failures"
     AURSAD = "aursad"
     VORAUS_AD = "voraus_ad"
+    ROBOMIMIC = "robomimic"
     OPEN_X = "open_x"
     DROID = "droid"
     GENERIC_CSV = "generic_csv"
