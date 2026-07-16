@@ -20,6 +20,8 @@ class SourceType(str, Enum):
     ROBOMIMIC = "robomimic"
     OPEN_X = "open_x"
     DROID = "droid"
+    BRIDGE_DATA = "bridge_data"
+    LEROBOT = "lerobot"
     GENERIC_CSV = "generic_csv"
     GENERIC_HDF5 = "generic_hdf5"
     GENERIC_PARQUET = "generic_parquet"
