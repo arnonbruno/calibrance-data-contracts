@@ -22,6 +22,20 @@ from .enums import (
     SourceType,
     TransformClass,
 )
+from .evidence import (
+    EvidenceLevel,
+    DiagnosticStatus,
+    ReasonCode,
+    CapabilityID,
+    TriState,
+    CapabilityDeclaration,
+    CapabilityPolicy,
+    SupportedEnvelope,
+    CapabilityClaim,
+    UncertaintyDecomposition,
+    ModelBundleManifest,
+    EvidenceManifest,
+)
 from .ontology import Intervention, ObservedEvent, Outcome, RootCause
 from .provenance import ProvenanceRecord
 from .rights import PERMISSIVE_LICENSE_IDS, DatasetRightsPolicy, TriBool
@@ -49,6 +63,19 @@ __all__ = [
     "SourceState",
     "SourceType",
     "TransformClass",
+    # evidence
+    "EvidenceLevel",
+    "DiagnosticStatus",
+    "ReasonCode",
+    "CapabilityID",
+    "TriState",
+    "CapabilityDeclaration",
+    "CapabilityPolicy",
+    "SupportedEnvelope",
+    "CapabilityClaim",
+    "UncertaintyDecomposition",
+    "ModelBundleManifest",
+    "EvidenceManifest",
     # ontology
     "Intervention",
     "ObservedEvent",
