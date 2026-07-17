@@ -20,7 +20,9 @@ def test_diagnostic_status():
 
 def test_reason_codes():
     assert ReasonCode.REQUIRED_CHANNEL_MISSING.value == "required_channel_missing"
-    assert len(ReasonCode) == 18
+    assert ReasonCode.HEAD_DISABLED.value == "head_disabled"
+    assert ReasonCode.USING_RLS_ONLY.value == "using_rls_only"
+    assert len(ReasonCode) == 23
 
 
 def test_capability_declaration():

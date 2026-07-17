@@ -50,6 +50,12 @@ class ReasonCode(str, Enum):
     FLEET_PRIOR_INCOMPATIBLE = "fleet_prior_incompatible"
     FLEET_PRIOR_REJECTED = "fleet_prior_rejected"
     EXTERNAL_REFERENCE_REQUIRED = "external_reference_required"
+    # RC2.1 Phase 1A — disabled / experimental product heads
+    HEAD_DISABLED = "head_disabled"
+    HEAD_EXPERIMENTAL = "head_experimental"
+    USING_DETERMINISTIC_RULES = "using_deterministic_rules"
+    USING_RLS_ONLY = "using_rls_only"
+    TELEMETRY_INTEGRITY_RESIDUAL = "telemetry_integrity_residual"
 
 
 class CapabilityID(str, Enum):
