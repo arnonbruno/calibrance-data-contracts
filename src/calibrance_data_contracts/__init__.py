@@ -9,6 +9,15 @@ data foundry.
 from __future__ import annotations
 
 from .augmentation import AugmentationConfig, AugmentationRecord
+from .capture_context import (
+    CaptureContext,
+    CaptureEpoch,
+    ClockQuality,
+    ConfigurationFingerprint,
+    GapAnnotation,
+    QualityFlag,
+    TimingAnnotation,
+)
 from .dataset import ArtifactRecord, DatasetSource, DatasetVersionManifest
 from .enums import (
     AugmentationClass,
@@ -48,6 +57,14 @@ __all__ = [
     # augmentation
     "AugmentationConfig",
     "AugmentationRecord",
+    # capture_context
+    "CaptureContext",
+    "CaptureEpoch",
+    "ClockQuality",
+    "ConfigurationFingerprint",
+    "GapAnnotation",
+    "QualityFlag",
+    "TimingAnnotation",
     # dataset
     "ArtifactRecord",
     "DatasetSource",
