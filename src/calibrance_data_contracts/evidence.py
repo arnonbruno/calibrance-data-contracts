@@ -56,8 +56,11 @@ class ReasonCode(str, Enum):
     USING_DETERMINISTIC_RULES = "using_deterministic_rules"
     USING_RLS_ONLY = "using_rls_only"
     TELEMETRY_INTEGRITY_RESIDUAL = "telemetry_integrity_residual"
-    # Milestone B — qualified summary_tree anomaly path
+    # Milestone B — qualified summary_forest anomaly path
+    # Erratum: USING_SUMMARY_TREE is the legacy code-path reason string.
+    # Canonical model family is summary_forest (RandomForestClassifier n=10, depth=5).
     USING_SUMMARY_TREE = "using_summary_tree"
+    USING_SUMMARY_FOREST = "using_summary_forest"
     NEURAL_ANOMALY_DISABLED = "neural_anomaly_disabled"
 
 
