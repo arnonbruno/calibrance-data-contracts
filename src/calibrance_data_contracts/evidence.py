@@ -56,6 +56,9 @@ class ReasonCode(str, Enum):
     USING_DETERMINISTIC_RULES = "using_deterministic_rules"
     USING_RLS_ONLY = "using_rls_only"
     TELEMETRY_INTEGRITY_RESIDUAL = "telemetry_integrity_residual"
+    # Milestone B — qualified summary_tree anomaly path
+    USING_SUMMARY_TREE = "using_summary_tree"
+    NEURAL_ANOMALY_DISABLED = "neural_anomaly_disabled"
 
 
 class CapabilityID(str, Enum):
