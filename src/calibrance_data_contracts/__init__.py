@@ -9,6 +9,15 @@ data foundry.
 from __future__ import annotations
 
 from .augmentation import AugmentationConfig, AugmentationRecord
+from .calibration_parameters import (
+    CalibrationParameterBounds,
+    CalibrationParameterGroup,
+    CalibrationParameterPrior,
+    CalibrationParameterSpec,
+    IdentifiedParameterVector,
+    ParameterGroupId,
+    default_ur3e_parameter_groups,
+)
 from .capture_context import (
     CaptureContext,
     CaptureEpoch,
@@ -19,6 +28,11 @@ from .capture_context import (
     TimingAnnotation,
 )
 from .dataset import ArtifactRecord, DatasetSource, DatasetVersionManifest
+from .dynamics_signals import (
+    CurrentResidualRecord,
+    DynamicsSignalWindow,
+    TorqueResidualRecord,
+)
 from .enums import (
     AugmentationClass,
     GroundTruthMethod,
@@ -45,11 +59,23 @@ from .evidence import (
     ModelBundleManifest,
     EvidenceManifest,
 )
+from .model_adequacy import (
+    ModelAdequacyClass,
+    ModelAdequacyDecision,
+    ModelAdequacyMetrics,
+)
 from .ontology import Intervention, ObservedEvent, Outcome, RootCause
 from .provenance import ProvenanceRecord
 from .rights import PERMISSIVE_LICENSE_IDS, DatasetRightsPolicy, TriBool
 from .signals import CanonicalSignals, QualityFlags
 from .trajectory import CanonicalTrajectory, EventLabel, MediaStreamRef
+from .twin_model import (
+    JointActuatorParameters,
+    JointFrictionParameters,
+    LinkInertialParameters,
+    TwinDynamicsContext,
+    TwinParameterSet,
+)
 
 __version__ = "0.1.0"
 
@@ -57,6 +83,14 @@ __all__ = [
     # augmentation
     "AugmentationConfig",
     "AugmentationRecord",
+    # calibration_parameters
+    "CalibrationParameterBounds",
+    "CalibrationParameterGroup",
+    "CalibrationParameterPrior",
+    "CalibrationParameterSpec",
+    "IdentifiedParameterVector",
+    "ParameterGroupId",
+    "default_ur3e_parameter_groups",
     # capture_context
     "CaptureContext",
     "CaptureEpoch",
@@ -69,6 +103,10 @@ __all__ = [
     "ArtifactRecord",
     "DatasetSource",
     "DatasetVersionManifest",
+    # dynamics_signals
+    "CurrentResidualRecord",
+    "DynamicsSignalWindow",
+    "TorqueResidualRecord",
     # enums
     "AugmentationClass",
     "GroundTruthMethod",
@@ -93,6 +131,10 @@ __all__ = [
     "UncertaintyDecomposition",
     "ModelBundleManifest",
     "EvidenceManifest",
+    # model_adequacy
+    "ModelAdequacyClass",
+    "ModelAdequacyDecision",
+    "ModelAdequacyMetrics",
     # ontology
     "Intervention",
     "ObservedEvent",
@@ -111,6 +153,12 @@ __all__ = [
     "CanonicalTrajectory",
     "EventLabel",
     "MediaStreamRef",
+    # twin_model
+    "JointActuatorParameters",
+    "JointFrictionParameters",
+    "LinkInertialParameters",
+    "TwinDynamicsContext",
+    "TwinParameterSet",
     # meta
     "__version__",
 ]
