@@ -1,10 +1,20 @@
 """Tests for evidence and capability schemas."""
+
 import pytest
+
 from calibrance_data_contracts.evidence import (
-    EvidenceLevel, DiagnosticStatus, ReasonCode, CapabilityID,
-    TriState, CapabilityDeclaration, CapabilityPolicy, SupportedEnvelope,
-    CapabilityClaim, UncertaintyDecomposition, ModelBundleManifest,
+    CapabilityClaim,
+    CapabilityDeclaration,
+    CapabilityID,
+    CapabilityPolicy,
+    DiagnosticStatus,
+    EvidenceLevel,
     EvidenceManifest,
+    ModelBundleManifest,
+    ReasonCode,
+    SupportedEnvelope,
+    TriState,
+    UncertaintyDecomposition,
 )
 
 
@@ -94,7 +104,9 @@ def test_model_bundle_manifest():
         split_manifest_digest="sha256:split",
         holdout_manifest_digest="sha256:holdout",
         rights_digest="sha256:rights",
-        components={"encoder": {"path": "encoder.npz", "digest": "sha256:enc", "status": "present"}},
+        components={
+            "encoder": {"path": "encoder.npz", "digest": "sha256:enc", "status": "present"}
+        },
         robot_dof=6,
         supported_envelope_digest="sha256:env",
         capability_declaration_digest="sha256:cap",
@@ -119,7 +131,9 @@ def test_evidence_manifest():
 
 def test_invalid_uncertainty():
     with pytest.raises(Exception):
-        UncertaintyDecomposition(data_quality=1.5, model=0, parameter=0, identifiability=0, configuration=0, temporal=0)
+        UncertaintyDecomposition(
+            data_quality=1.5, model=0, parameter=0, identifiability=0, configuration=0, temporal=0
+        )
 
 
 def test_capability_claim():
