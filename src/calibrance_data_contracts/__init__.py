@@ -8,7 +8,9 @@ data foundry.
 
 from __future__ import annotations
 
+from .activity_fingerprint import ActivityFingerprint
 from .augmentation import AugmentationConfig, AugmentationRecord
+from .calibration_outcome import CalibrationOutcomeEnvelope
 from .calibration_parameters import (
     CalibrationParameterBounds,
     CalibrationParameterGroup,
@@ -35,6 +37,8 @@ from .dynamics_signals import (
 )
 from .enums import (
     AugmentationClass,
+    ContributionMode,
+    EvidenceTier,
     GroundTruthMethod,
     HydrationLevel,
     LabelSource,
@@ -80,9 +84,13 @@ from .twin_model import (
 __version__ = "0.1.0"
 
 __all__ = [
+    # activity_fingerprint
+    "ActivityFingerprint",
     # augmentation
     "AugmentationConfig",
     "AugmentationRecord",
+    # calibration_outcome
+    "CalibrationOutcomeEnvelope",
     # calibration_parameters
     "CalibrationParameterBounds",
     "CalibrationParameterGroup",
@@ -109,6 +117,8 @@ __all__ = [
     "TorqueResidualRecord",
     # enums
     "AugmentationClass",
+    "ContributionMode",
+    "EvidenceTier",
     "GroundTruthMethod",
     "HydrationLevel",
     "LabelSource",

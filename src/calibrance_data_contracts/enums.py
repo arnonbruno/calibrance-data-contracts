@@ -223,3 +223,30 @@ class GroundTruthMethod(str, Enum):
     SIMULATOR = "simulator"
     STATISTICAL_BASELINE = "statistical_baseline"
     UNKNOWN = "unknown"
+
+
+class EvidenceTier(str, Enum):
+    """Evidence provenance tier for exported lifecycle facts.
+
+    Tiers must never be merged silently. Every exported record must state exactly one tier.
+    Ordered from least to most authoritative.
+    """
+
+    SYNTHETIC = "synthetic"
+    RECORDED_REAL_REPLAY = "recorded_real_replay"
+    URSIM_HIL = "ursim_hil"
+    LIVE_SHADOW = "live_shadow"
+    LIVE_HUMAN_APPROVED = "live_human_approved"
+
+
+class ContributionMode(str, Enum):
+    """Tenant data contribution policy for moat/derived knowledge.
+
+    PRIVATE (default) — no cross-customer derived use.
+    COHORT — raw telemetry stays tenant-isolated; de-identified sufficient statistics allowed.
+    RESEARCH_PARTNER — governed derived learning allowed.
+    """
+
+    PRIVATE = "private"
+    COHORT = "cohort"
+    RESEARCH_PARTNER = "research_partner"
