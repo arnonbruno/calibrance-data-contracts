@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "calibrance-data-contracts"
-version = "0.1.0"
+version = "0.1.1"
 description = "Shared data schemas, enums, and type definitions for the Calibrance data foundry."
 readme = "README.md"
 license = { text = "MIT" }
