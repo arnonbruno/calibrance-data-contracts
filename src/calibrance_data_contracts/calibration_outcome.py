@@ -56,7 +56,6 @@ class CalibrationOutcomeEnvelope(BaseModel):
         forbidden = FORBIDDEN_PAYLOAD_KEYS.intersection(value.keys())
         if forbidden:
             raise ValueError(
-                "payload must not contain hidden-truth keys: "
-                + ", ".join(sorted(forbidden))
+                "payload must not contain hidden-truth keys: " + ", ".join(sorted(forbidden))
             )
         return value

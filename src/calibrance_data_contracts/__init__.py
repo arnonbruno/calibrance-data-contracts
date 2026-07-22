@@ -50,18 +50,18 @@ from .enums import (
     TransformClass,
 )
 from .evidence import (
-    EvidenceLevel,
-    DiagnosticStatus,
-    ReasonCode,
-    CapabilityID,
-    TriState,
-    CapabilityDeclaration,
-    CapabilityPolicy,
-    SupportedEnvelope,
     CapabilityClaim,
-    UncertaintyDecomposition,
-    ModelBundleManifest,
+    CapabilityDeclaration,
+    CapabilityID,
+    CapabilityPolicy,
+    DiagnosticStatus,
+    EvidenceLevel,
     EvidenceManifest,
+    ModelBundleManifest,
+    ReasonCode,
+    SupportedEnvelope,
+    TriState,
+    UncertaintyDecomposition,
 )
 from .model_adequacy import (
     ModelAdequacyClass,

@@ -60,16 +60,12 @@ def test_calibration_outcome_envelope_validates():
 
 def test_calibration_outcome_envelope_rejects_unknown_evidence_tier():
     with pytest.raises(ValidationError):
-        CalibrationOutcomeEnvelope(
-            **_complete_envelope_kwargs(evidence_tier="not_a_real_tier")
-        )
+        CalibrationOutcomeEnvelope(**_complete_envelope_kwargs(evidence_tier="not_a_real_tier"))
 
 
 def test_calibration_outcome_envelope_rejects_unknown_contribution_mode():
     with pytest.raises(ValidationError):
-        CalibrationOutcomeEnvelope(
-            **_complete_envelope_kwargs(contribution_mode="not_a_real_mode")
-        )
+        CalibrationOutcomeEnvelope(**_complete_envelope_kwargs(contribution_mode="not_a_real_mode"))
 
 
 def test_calibration_outcome_envelope_defaults_contribution_mode_to_private():
@@ -125,9 +121,7 @@ def test_activity_fingerprint_defaults_optional_fields():
 @pytest.mark.parametrize("forbidden_key", sorted(FORBIDDEN_PAYLOAD_KEYS))
 def test_calibration_outcome_envelope_rejects_hidden_truth_payload_keys(forbidden_key):
     with pytest.raises(ValidationError) as exc_info:
-        CalibrationOutcomeEnvelope(
-            **_complete_envelope_kwargs(payload={forbidden_key: "secret"})
-        )
+        CalibrationOutcomeEnvelope(**_complete_envelope_kwargs(payload={forbidden_key: "secret"}))
     assert forbidden_key in str(exc_info.value)
 
 
