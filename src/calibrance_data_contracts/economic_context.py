@@ -199,6 +199,10 @@ class EconomicEstimate:
             raise EconomicValidationError(
                 f"currency ambiguity: expected ISO 4217 code, got {self.currency!r}"
             )
+        if currency not in KNOWN_CURRENCIES:
+            raise EconomicValidationError(
+                f"currency ambiguity: unsupported or unknown code {currency!r}"
+            )
         self.currency = currency
 
         # Synthetic / demo must never claim realized savings.
@@ -226,9 +230,7 @@ class EconomicEstimate:
                     "estimated_not_observed forbids observed_outcome and validated_value"
                 )
         if self.value_status == "observed_not_validated" and self.validated_value is not None:
-            raise EconomicValidationError(
-                "observed_not_validated forbids validated_value"
-            )
+            raise EconomicValidationError("observed_not_validated forbids validated_value")
         if self.value_status == "validated" and self.validated_value is None:
             raise EconomicValidationError("validated status requires validated_value")
 
@@ -241,9 +243,7 @@ def assert_currency_match(assumptions: EconomicAssumptions, estimate_currency: s
     left = assumptions.currency.upper()
     right = (estimate_currency or "").strip().upper()
     if left != right:
-        raise EconomicValidationError(
-            f"currency mismatch: assumptions={left} estimate={right}"
-        )
+        raise EconomicValidationError(f"currency mismatch: assumptions={left} estimate={right}")
 
 
 __all__ = [

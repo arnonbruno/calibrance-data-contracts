@@ -83,9 +83,7 @@ class DatasetRightsPolicy(BaseModel):
     share_alike: bool = Field(
         default=False, description="Does the licence impose a share-alike clause (copyleft)?"
     )
-    noncommercial: bool = Field(
-        default=False, description="Is the licence non-commercial only?"
-    )
+    noncommercial: bool = Field(default=False, description="Is the licence non-commercial only?")
     no_derivatives: bool = Field(
         default=False, description="Does the licence prohibit derivative works?"
     )
@@ -129,7 +127,11 @@ class DatasetRightsPolicy(BaseModel):
         if self.license_id not in PERMISSIVE_LICENSE_IDS:
             return False
 
-        if self.personal_data_possible or self.human_subjects_possible or self.export_restriction_possible:
+        if (
+            self.personal_data_possible
+            or self.human_subjects_possible
+            or self.export_restriction_possible
+        ):
             return False
 
         if self.noncommercial or self.no_derivatives:

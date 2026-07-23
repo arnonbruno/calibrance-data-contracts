@@ -24,6 +24,8 @@ class ModelAdequacyMetrics(BaseModel):
     torque_max_abs_nm: float = Field(ge=0.0)
     residual_whiteness_score: float | None = Field(
         default=None,
+        ge=0.0,
+        le=1.0,
         description="Optional residual autocorrelation score in [0, 1].",
     )
     n_samples: int = Field(ge=1)

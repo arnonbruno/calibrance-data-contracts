@@ -169,3 +169,13 @@ def test_outcome_types_cover_acceptance_scenarios() -> None:
         "evidence_insufficient",
     }
     assert required.issubset({o.value for o in OutcomeType})
+
+
+def test_non_synthetic_outcome_requires_audit() -> None:
+    with pytest.raises(ValueError, match="audit_event_id"):
+        _outcome(evidence_tier="live_shadow", audit_event_id=None)
+
+
+def test_physical_intervention_requires_parameters() -> None:
+    with pytest.raises(ValueError, match="actual_parameters_applied"):
+        _intervention(actual_parameters_applied={})

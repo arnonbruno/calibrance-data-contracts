@@ -145,7 +145,13 @@ class CandidateValidation:
 
         self.rejection_reasons = list(self.rejection_reasons or [])
         self.labels = dict(self.labels or {})
-        self.warnings = list(self.warnings or [])
+        warnings = list(self.warnings or [])
+        for reason in self.rejection_reasons:
+            if not (reason or "").strip():
+                raise CandidateValidationError("rejection_reasons must not contain empty strings")
+            if reason not in KNOWN_REJECTION_REASONS:
+                warnings.append(f"unknown rejection_reason: {reason}")
+        self.warnings = warnings
         self.quality_observation_ids = list(self.quality_observation_ids or [])
 
         if self.created_at.tzinfo is None:
@@ -172,15 +178,11 @@ class CandidateValidation:
                 dict(self.simulator_agreement) if self.simulator_agreement else None
             ),
             "counterexample_similarity": (
-                dict(self.counterexample_similarity)
-                if self.counterexample_similarity
-                else None
+                dict(self.counterexample_similarity) if self.counterexample_similarity else None
             ),
             "physical_validity": dict(self.physical_validity),
             "uncertainty_quality": dict(self.uncertainty_quality),
-            "model_inadequacy": (
-                dict(self.model_inadequacy) if self.model_inadequacy else None
-            ),
+            "model_inadequacy": (dict(self.model_inadequacy) if self.model_inadequacy else None),
             "rejection_reasons": list(self.rejection_reasons),
             "created_at": self.created_at.isoformat(),
             "evidence_tier": self.evidence_tier,
@@ -189,9 +191,7 @@ class CandidateValidation:
             "credibility_status": self.credibility_status,
             "quality_observation_ids": list(self.quality_observation_ids),
             "outcome_chain_id": self.outcome_chain_id,
-            "evidence_recommendation_triggered": bool(
-                self.evidence_recommendation_triggered
-            ),
+            "evidence_recommendation_triggered": bool(self.evidence_recommendation_triggered),
         }
 
 

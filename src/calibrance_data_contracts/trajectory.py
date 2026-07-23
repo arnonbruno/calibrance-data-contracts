@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from .enums import GroundTruthMethod, LabelSource, LabelType, Modality
 from .signals import CanonicalSignals, QualityFlags
@@ -78,6 +78,13 @@ class EventLabel(BaseModel):
         default="0.1.0", description="Version of the event/outcome ontology used."
     )
 
+    @model_validator(mode="after")
+    def _check_time_range(self) -> EventLabel:
+        start, end = self.time_range
+        if start > end:
+            raise ValueError("time_range start must be <= end")
+        return self
+
 
 class CanonicalTrajectory(BaseModel):
     """
@@ -107,9 +114,7 @@ class CanonicalTrajectory(BaseModel):
     # Robot / environment description
     robot_name: Optional[str] = Field(default=None, description="Robot identifier.")
     task_description: Optional[str] = Field(default=None, description="Task description.")
-    num_dofs: Optional[int] = Field(
-        default=None, ge=1, description="Number of degrees of freedom."
-    )
+    num_dofs: Optional[int] = Field(default=None, ge=1, description="Number of degrees of freedom.")
 
     # Per-step data (all arrays must be length == num_steps)
     signals: Optional[CanonicalSignals] = Field(

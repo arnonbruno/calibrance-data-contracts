@@ -1,10 +1,19 @@
-"""Typed capture context schemas — timing semantics, config fingerprint, and pipeline configuration."""
+"""Typed capture context schemas.
 
-from datetime import datetime
+Covers timing semantics, configuration fingerprint, and pipeline configuration.
+"""
+
+from __future__ import annotations
+
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional
 
 from pydantic import BaseModel, Field
+
+
+def _utc_now() -> datetime:
+    return datetime.now(timezone.utc)
 
 
 class ClockQuality(str, Enum):
@@ -33,14 +42,13 @@ class TimingAnnotation(BaseModel):
     gap_representation: str = Field(
         default="none",
         description=(
-            "How missing samples are represented in this window: "
-            "'none', 'mask', 'interpolated'"
+            "How missing samples are represented in this window: " "'none', 'mask', 'interpolated'"
         ),
     )
 
 
 class ConfigurationFingerprint(BaseModel):
-    """Captures exactly what software/firmware was running, bounded strings, can change on restart."""
+    """Software/firmware fingerprint; bounded strings that may change on restart."""
 
     controller_version: str = Field(
         default="unknown",
@@ -85,7 +93,7 @@ class CaptureContext(BaseModel):
     """Full capture context — should be attached to every captured trajectory or replay artifact."""
 
     capture_id: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=_utc_now)
 
     # Robot
     robot_model: str = Field(default="unknown", max_length=64)

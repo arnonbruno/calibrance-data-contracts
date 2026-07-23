@@ -93,9 +93,7 @@ class EvidenceRecommendation:
                 "commands_robot must be false (recommend_only authority)"
             )
         if not self.human_approval_required:
-            raise EvidenceRecommendationValidationError(
-                "human_approval_required must be true"
-            )
+            raise EvidenceRecommendationValidationError("human_approval_required must be true")
         if self.active_identification_authority not in AUTHORITY_VALUES:
             raise EvidenceRecommendationValidationError(
                 f"active_identification_authority must be "
@@ -219,8 +217,7 @@ def default_constraints(
         "payload": {"min_kg": payload_kg_min, "max_kg": payload_kg_max},
         "duration": {"budget_minutes": duration_budget_minutes},
         "available_signals": list(
-            available_signals
-            or ["joint_position", "joint_velocity", "joint_torque", "timestamp"]
+            available_signals or ["joint_position", "joint_velocity", "joint_torque", "timestamp"]
         ),
         "site_policy": site_policy,
         "safety_declaration": {

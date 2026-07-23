@@ -2,8 +2,8 @@
 calibrance-data-contracts
 =========================
 
-Shared Pydantic v2 schemas, enums, and type definitions for the Calibrance
-data foundry.
+Shared schemas (Pydantic v2 and dataclasses), enums, and type definitions
+for the Calibrance data foundry.
 """
 
 from __future__ import annotations
@@ -131,7 +131,7 @@ from .twin_model import (
     TwinParameterSet,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     # activity_fingerprint

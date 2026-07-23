@@ -149,6 +149,8 @@ class HumanDecision:
             raise ValueError("synthetic human decisions must not be labeled as real")
         if self.evidence_tier == "synthetic" and self.labeled_as_real:
             raise ValueError("synthetic evidence_tier decisions must not be labeled as real")
+        if not 0.0 <= float(self.confidence) <= 1.0:
+            raise ValueError("confidence must be in [0, 1]")
 
 
 @dataclass
@@ -169,6 +171,16 @@ class PhysicalIntervention:
     source: str = "api"
     confidence: float = 1.0
     audit_event_id: Optional[str] = None
+
+    def __post_init__(self) -> None:
+        if not (self.intervention_id or "").strip():
+            raise ValueError("intervention_id is required")
+        if not (self.decision_id or "").strip():
+            raise ValueError("decision_id is required")
+        if not self.actual_parameters_applied:
+            raise ValueError("actual_parameters_applied is required")
+        if not 0.0 <= float(self.confidence) <= 1.0:
+            raise ValueError("confidence must be in [0, 1]")
 
 
 @dataclass
@@ -203,15 +215,15 @@ class ObservedOutcome:
 
     def __post_init__(self) -> None:
         if not self.audit_event_id and self.evidence_tier != "synthetic":
-            # Non-synthetic outcomes still require audit linkage when claimed.
-            pass
+            raise ValueError("non-synthetic outcomes require audit_event_id for provenance")
         if self.intervention_asset_id and self.intervention_asset_id != self.asset_id:
             raise ValueError("cross-asset outcome link is forbidden")
-        if (
-            self.causal_attribution == CausalAttribution.SUPPORTED
-            and not self.causal_evidence_ids
-        ):
+        if self.causal_attribution == CausalAttribution.SUPPORTED and not self.causal_evidence_ids:
             raise ValueError("causal claim without evidence is forbidden")
+        if not 0.0 <= float(self.confidence) <= 1.0:
+            raise ValueError("confidence must be in [0, 1]")
+        if float(self.observation_window_hours) < 0:
+            raise ValueError("observation_window_hours must be non-negative")
         if not self.observation_window_closed and self.outcome_type not in {
             OutcomeType.EVIDENCE_INSUFFICIENT,
         }:

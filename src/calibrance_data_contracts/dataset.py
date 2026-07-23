@@ -31,9 +31,7 @@ class ArtifactRecord(BaseModel):
     storage_path: Optional[str] = Field(
         default=None, description="Local storage path (if downloaded)."
     )
-    download_url: Optional[str] = Field(
-        default=None, description="Original download URL."
-    )
+    download_url: Optional[str] = Field(default=None, description="Original download URL.")
     etag: Optional[str] = Field(default=None, description="HTTP ETag / content hash from source.")
     last_modified: Optional[datetime] = Field(
         default=None, description="Last-modified timestamp from the upstream source."
@@ -57,9 +55,7 @@ class DatasetSource(BaseModel):
     license_id: Optional[str] = Field(
         default=None, description="SPDX-style or custom licence identifier."
     )
-    rights_policy_id: Optional[UUID] = Field(
-        default=None, description="FK to DatasetRightsPolicy."
-    )
+    rights_policy_id: Optional[UUID] = Field(default=None, description="FK to DatasetRightsPolicy.")
 
     state: SourceState = Field(
         default=SourceState.DISCOVERED, description="Current lifecycle state."
@@ -137,9 +133,7 @@ class DatasetVersionManifest(BaseModel):
     )
 
     # Free-form metadata
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Version-specific metadata."
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Version-specific metadata.")
 
 
 __all__ = [

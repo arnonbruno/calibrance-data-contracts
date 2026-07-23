@@ -222,9 +222,7 @@ class QualityFlags(BaseModel):
     is_interpolated: bool = Field(
         default=False, description="Values at this step were filled by interpolation."
     )
-    is_clipped: bool = Field(
-        default=False, description="Values were clipped to a valid range."
-    )
+    is_clipped: bool = Field(default=False, description="Values were clipped to a valid range.")
     sensor_fault: bool = Field(
         default=False, description="Upstream sensor reported a fault at this step."
     )

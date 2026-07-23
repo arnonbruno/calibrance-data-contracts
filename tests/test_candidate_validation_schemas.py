@@ -98,3 +98,11 @@ def test_unsupported_disposition() -> None:
         warnings=["mechanism_not_supported:plastic_deformation"],
     )
     assert v.disposition.value == "unsupported"
+
+
+def test_unknown_rejection_reason_warns() -> None:
+    v = _valid(
+        disposition=CandidateDisposition.REJECT,
+        rejection_reasons=["custom_plant_policy"],
+    )
+    assert any("unknown rejection_reason" in w for w in v.warnings)

@@ -125,3 +125,8 @@ def test_demo_estimate_labels() -> None:
     assert e.validated_value is None
     assert e.labels["NOT_REALIZED_SAVINGS"] is True
     assert e.affects_activation is False
+
+
+def test_estimate_rejects_unknown_currency() -> None:
+    with pytest.raises(EconomicValidationError, match="currency ambiguity"):
+        _estimate(currency="XXX")

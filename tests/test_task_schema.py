@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
+import pytest
+
 from calibrance_data_contracts import (
     ActivityFamily,
     TaskBinding,
@@ -12,14 +14,8 @@ from calibrance_data_contracts import (
 )
 
 
-def test_activity_family_members() -> None:
-    assert ActivityFamily.MACHINE_TENDING.value == "machine_tending"
-    assert ActivityFamily.PRECISION_ASSEMBLY.value == "precision_assembly"
-    assert len(ActivityFamily) == 10
-
-
-def test_task_definition_round_trip() -> None:
-    task = TaskDefinition(
+def _task(**overrides) -> TaskDefinition:
+    data = dict(
         task_id="task-mt-001",
         name="Machine tending cell A",
         activity_family=ActivityFamily.MACHINE_TENDING,
@@ -43,10 +39,47 @@ def test_task_definition_round_trip() -> None:
         created_by="engineer@example.com",
         immutable=False,
     )
+    data.update(overrides)
+    return TaskDefinition(**data)
+
+
+def test_activity_family_members() -> None:
+    assert ActivityFamily.MACHINE_TENDING.value == "machine_tending"
+    assert ActivityFamily.PRECISION_ASSEMBLY.value == "precision_assembly"
+    assert len(ActivityFamily) == 10
+
+
+def test_task_definition_round_trip() -> None:
+    task = _task()
     assert task.task_id == "task-mt-001"
     assert task.activity_family is ActivityFamily.MACHINE_TENDING
     assert task.tolerances.position_tolerance_mm == 2.0
     assert task.immutable is False
+
+
+def test_task_definition_accepts_activity_family_string() -> None:
+    task = _task(activity_family="pick_and_place")
+    assert task.activity_family is ActivityFamily.PICK_AND_PLACE
+
+
+def test_task_definition_rejects_empty_id() -> None:
+    with pytest.raises(ValueError, match="task_id"):
+        _task(task_id="")
+
+
+def test_task_definition_rejects_inverted_payload_range() -> None:
+    with pytest.raises(ValueError, match="payload_range_kg"):
+        _task(payload_range_kg=(2.0, 0.1))
+
+
+def test_task_tolerance_rejects_negative() -> None:
+    with pytest.raises(ValueError, match="position_tolerance_mm"):
+        TaskTolerance(
+            position_tolerance_mm=-1.0,
+            orientation_tolerance_deg=1.0,
+            torque_tolerance_pct=10.0,
+            cycle_time_tolerance_pct=15.0,
+        )
 
 
 def test_task_binding_fields() -> None:
@@ -62,3 +95,17 @@ def test_task_binding_fields() -> None:
     )
     assert binding.task_id == "task-mt-001"
     assert binding.configuration_id == "cfg-digest-abc"
+
+
+def test_task_binding_requires_timezone() -> None:
+    with pytest.raises(ValueError, match="timezone-aware"):
+        TaskBinding(
+            organization_id="org-1",
+            site_id="site-1",
+            asset_id="asset-1",
+            configuration_id="cfg",
+            task_id="task-1",
+            task_version="1.0.0",
+            bound_at=datetime(2026, 7, 23),
+            bound_by="engineer@example.com",
+        )

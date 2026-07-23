@@ -1,23 +1,31 @@
 """Evidence and capability schemas for the Technical Evidence Program."""
 
+from __future__ import annotations
+
+from datetime import datetime, timezone
 from enum import Enum
+
 from pydantic import BaseModel, Field
-from typing import Optional
-from datetime import datetime
+
+
+def _utc_now() -> datetime:
+    return datetime.now(timezone.utc)
 
 
 class EvidenceLevel(str, Enum):
     """Evidence maturity levels for capability claims."""
+
     E0_CODE_VERIFIED = "E0"  # Unit/property/contract/numerical/security verified
-    E1_SYNTHETIC = "E1"      # Controlled simulated interventions with known parameters
-    E2_REAL_DATA = "E2"      # Independently collected real data
-    E3_LIVE_SHADOW = "E3"    # Connected to physical robot without affecting operation
-    E4_VERIFIED = "E4"       # Diagnostic followed by controlled intervention
-    E5_VALIDATED = "E5"      # Repeated across robots, sites, regimes
+    E1_SYNTHETIC = "E1"  # Controlled simulated interventions with known parameters
+    E2_REAL_DATA = "E2"  # Independently collected real data
+    E3_LIVE_SHADOW = "E3"  # Connected to physical robot without affecting operation
+    E4_VERIFIED = "E4"  # Diagnostic followed by controlled intervention
+    E5_VALIDATED = "E5"  # Repeated across robots, sites, regimes
 
 
 class DiagnosticStatus(str, Enum):
     """Possible diagnostic response states."""
+
     UNSUPPORTED_CONFIGURATION = "unsupported_configuration"
     INVALID_TELEMETRY = "invalid_telemetry"
     INSUFFICIENT_DATA = "insufficient_data"
@@ -32,6 +40,7 @@ class DiagnosticStatus(str, Enum):
 
 class ReasonCode(str, Enum):
     """Versioned reason codes for diagnostic decisions."""
+
     REQUIRED_CHANNEL_MISSING = "required_channel_missing"
     INSUFFICIENT_WINDOW_LENGTH = "insufficient_window_length"
     INSUFFICIENT_ACCELERATION_DIVERSITY = "insufficient_acceleration_diversity"
@@ -66,6 +75,7 @@ class ReasonCode(str, Enum):
 
 class CapabilityID(str, Enum):
     """Supported capability identifiers."""
+
     PACKET_LOSS = "packet_loss"
     TIMING_FAULT = "timing_fault"
     SENSOR_BIAS = "sensor_bias"
@@ -84,6 +94,7 @@ class CapabilityID(str, Enum):
 
 class TriState(str, Enum):
     """Tri-state for capability declarations."""
+
     TRUE = "true"
     CONDITIONAL = "conditional"
     FALSE = "false"
@@ -91,6 +102,7 @@ class TriState(str, Enum):
 
 class CapabilityDeclaration(BaseModel):
     """A single capability declaration for a model bundle."""
+
     capability_id: CapabilityID
     name: str
     detectable: TriState = TriState.FALSE
@@ -106,6 +118,7 @@ class CapabilityDeclaration(BaseModel):
 
 class CapabilityPolicy(BaseModel):
     """The product-wide capability policy (one per product)."""
+
     policy_version: str
     intended_use_id: str
     intended_use_digest: str
@@ -115,6 +128,7 @@ class CapabilityPolicy(BaseModel):
 
 class SupportedEnvelope(BaseModel):
     """Operating envelope for a model bundle."""
+
     robot_models: list[str]
     controller_versions: list[str] = Field(default_factory=lambda: ["*"])
     firmware_versions: list[str] = Field(default_factory=lambda: ["*"])
@@ -127,6 +141,7 @@ class SupportedEnvelope(BaseModel):
 
 class CapabilityClaim(BaseModel):
     """A runtime claim for a specific diagnostic request."""
+
     capability_id: CapabilityID
     allowed_action: str  # "detect", "diagnose", "estimate", "candidate_only", "refuse"
     evidence_level: EvidenceLevel
@@ -135,6 +150,7 @@ class CapabilityClaim(BaseModel):
 
 class UncertaintyDecomposition(BaseModel):
     """Uncertainty components for a diagnostic."""
+
     data_quality: float = Field(ge=0.0, le=1.0)
     model: float = Field(ge=0.0, le=1.0)
     parameter: float = Field(ge=0.0, le=1.0)
@@ -145,6 +161,7 @@ class UncertaintyDecomposition(BaseModel):
 
 class ModelBundleManifest(BaseModel):
     """Manifest for a complete model bundle."""
+
     bundle_schema_version: str = "1.0"
     model_id: str
     bundle_digest: str
@@ -170,6 +187,7 @@ class ModelBundleManifest(BaseModel):
 
 class EvidenceManifest(BaseModel):
     """Manifest for an evidence run."""
+
     run_id: str
     run_digest: str
     bundle_manifest_digest: str
@@ -178,4 +196,4 @@ class EvidenceManifest(BaseModel):
     scenario_manifests: list[str] = Field(default_factory=list)
     metric_definitions_digest: str
     results_summary: dict = Field(default_factory=dict)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=_utc_now)

@@ -5,7 +5,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class ParameterGroupId(str, Enum):
@@ -70,6 +70,16 @@ class IdentifiedParameterVector(BaseModel):
     covariance_diag: tuple[float, ...] | None = None
     method: str = "least_squares"
     active_groups: tuple[ParameterGroupId, ...] = ()
+
+    @model_validator(mode="after")
+    def _check_vector_lengths(self) -> IdentifiedParameterVector:
+        if len(self.names) != len(self.values):
+            raise ValueError("names and values must have the same length")
+        if self.covariance_diag is not None and len(self.covariance_diag) != len(self.values):
+            raise ValueError("covariance_diag must match values length")
+        if any(v < 0 for v in (self.covariance_diag or ())):
+            raise ValueError("covariance_diag entries must be non-negative")
+        return self
 
 
 def default_ur3e_parameter_groups() -> list[CalibrationParameterGroup]:

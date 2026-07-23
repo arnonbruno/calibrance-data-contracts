@@ -6,7 +6,7 @@ pure physical/kinematic descriptors only.
 
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class ActivityFingerprint(BaseModel):
@@ -29,3 +29,23 @@ class ActivityFingerprint(BaseModel):
     contact_fraction: float = 0.0
     temperature_range: tuple[float, float] | None = None
     channel_availability: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def _check_physical_ranges(self) -> ActivityFingerprint:
+        if self.duration_s < 0:
+            raise ValueError("duration_s must be non-negative")
+        if self.sample_rate_hz <= 0:
+            raise ValueError("sample_rate_hz must be positive")
+        for name in (
+            "direction_coverage",
+            "gravity_pose_diversity",
+            "contact_fraction",
+        ):
+            value = float(getattr(self, name))
+            if not 0.0 <= value <= 1.0:
+                raise ValueError(f"{name} must be in [0, 1]")
+        if self.temperature_range is not None:
+            t_lo, t_hi = self.temperature_range
+            if t_lo > t_hi:
+                raise ValueError("temperature_range min must be <= max")
+        return self

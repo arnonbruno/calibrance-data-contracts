@@ -11,6 +11,9 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional
 
+_ALIGNMENT_STATUSES: frozenset[str] = frozenset({"aligned", "alignment_uncertain"})
+_CLOCK_SOURCES: frozenset[str] = frozenset({"device", "ntp", "manual"})
+
 
 def _utc_now() -> datetime:
     return datetime.now(timezone.utc)
@@ -26,6 +29,8 @@ class OperatingMode(str, Enum):
 
 @dataclass
 class ProcessEvent:
+    """Manufacturing process/cycle context linked to robot telemetry."""
+
     event_id: str
     tenant_id: str
     asset_id: str
@@ -49,3 +54,39 @@ class ProcessEvent:
     alignment_status: str = "aligned"  # aligned, alignment_uncertain
     source: str = "csv"  # csv, parquet, rest, mqtt
     evidence_tier: str = "synthetic"
+
+    def __post_init__(self) -> None:
+        if not (self.event_id or "").strip():
+            raise ValueError("event_id is required")
+        if not (self.tenant_id or "").strip():
+            raise ValueError("tenant_id is required")
+        if not (self.asset_id or "").strip():
+            raise ValueError("asset_id is required")
+        if isinstance(self.operating_mode, str):
+            self.operating_mode = OperatingMode(self.operating_mode)
+        if self.cycle_time_s is not None and float(self.cycle_time_s) < 0:
+            raise ValueError("cycle_time_s must be non-negative")
+        if (
+            self.cycle_start is not None
+            and self.cycle_end is not None
+            and self.cycle_end < self.cycle_start
+        ):
+            raise ValueError("cycle_end must be >= cycle_start")
+        if self.alignment_status not in _ALIGNMENT_STATUSES:
+            raise ValueError(
+                f"alignment_status must be one of {sorted(_ALIGNMENT_STATUSES)}, "
+                f"got {self.alignment_status!r}"
+            )
+        if self.clock_source not in _CLOCK_SOURCES:
+            raise ValueError(
+                f"clock_source must be one of {sorted(_CLOCK_SOURCES)}, "
+                f"got {self.clock_source!r}"
+            )
+        if self.alignment_uncertainty_ms is not None and float(self.alignment_uncertainty_ms) < 0:
+            raise ValueError("alignment_uncertainty_ms must be non-negative")
+        if self.timestamp.tzinfo is None:
+            self.timestamp = self.timestamp.replace(tzinfo=timezone.utc)
+        self.alarm_events = [dict(e) for e in (self.alarm_events or [])]
+        self.stop_events = [dict(e) for e in (self.stop_events or [])]
+        self.maintenance_events = [dict(e) for e in (self.maintenance_events or [])]
+        self.operator_annotations = list(self.operator_annotations or [])

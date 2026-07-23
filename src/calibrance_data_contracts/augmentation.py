@@ -28,9 +28,7 @@ class AugmentationConfig(BaseModel):
     augmentation_class: AugmentationClass = Field(
         ..., description="High-level augmentation taxonomy class."
     )
-    transform_class: TransformClass = Field(
-        ..., description="Concrete transform identifier."
-    )
+    transform_class: TransformClass = Field(..., description="Concrete transform identifier.")
     parameters: dict[str, Any] = Field(
         default_factory=dict,
         description="Transform-specific parameters (e.g. sigma, warp strength).",
@@ -63,9 +61,7 @@ class AugmentationRecord(BaseModel):
     """
 
     id: UUID = Field(default_factory=uuid4, description="Unique augmentation record ID.")
-    parent_trajectory_id: UUID = Field(
-        ..., description="Source (pre-augmentation) trajectory ID."
-    )
+    parent_trajectory_id: UUID = Field(..., description="Source (pre-augmentation) trajectory ID.")
     child_trajectory_id: UUID = Field(
         ..., description="Resulting (post-augmentation) trajectory ID."
     )
