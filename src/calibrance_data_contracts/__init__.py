@@ -20,6 +20,20 @@ from .calibration_parameters import (
     ParameterGroupId,
     default_ur3e_parameter_groups,
 )
+from .candidate_validation import (
+    DISPOSITION_VALUES,
+    KNOWN_REJECTION_REASONS,
+    REJECTION_COUNTEREXAMPLE,
+    REJECTION_CROSS_TASK,
+    REJECTION_MODEL_INADEQUACY,
+    REJECTION_OVERFITTING,
+    REJECTION_PHYSICAL,
+    REJECTION_UNCERTAINTY,
+    REJECTION_UNDER_CALIBRATED,
+    CandidateDisposition,
+    CandidateValidation,
+    CandidateValidationError,
+)
 from .capture_context import (
     CaptureContext,
     CaptureEpoch,
@@ -135,6 +149,19 @@ __all__ = [
     "IdentifiedParameterVector",
     "ParameterGroupId",
     "default_ur3e_parameter_groups",
+    # candidate_validation
+    "DISPOSITION_VALUES",
+    "KNOWN_REJECTION_REASONS",
+    "REJECTION_COUNTEREXAMPLE",
+    "REJECTION_CROSS_TASK",
+    "REJECTION_MODEL_INADEQUACY",
+    "REJECTION_OVERFITTING",
+    "REJECTION_PHYSICAL",
+    "REJECTION_UNCERTAINTY",
+    "REJECTION_UNDER_CALIBRATED",
+    "CandidateDisposition",
+    "CandidateValidation",
+    "CandidateValidationError",
     # capture_context
     "CaptureContext",
     "CaptureEpoch",
