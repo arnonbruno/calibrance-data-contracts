@@ -72,6 +72,7 @@ from .ontology import Intervention, ObservedEvent, Outcome, RootCause
 from .provenance import ProvenanceRecord
 from .rights import PERMISSIVE_LICENSE_IDS, DatasetRightsPolicy, TriBool
 from .signals import CanonicalSignals, QualityFlags
+from .task import ActivityFamily, TaskBinding, TaskDefinition, TaskTolerance
 from .trajectory import CanonicalTrajectory, EventLabel, MediaStreamRef
 from .twin_model import (
     JointActuatorParameters,
@@ -159,6 +160,11 @@ __all__ = [
     # signals
     "CanonicalSignals",
     "QualityFlags",
+    # task
+    "ActivityFamily",
+    "TaskBinding",
+    "TaskDefinition",
+    "TaskTolerance",
     # trajectory
     "CanonicalTrajectory",
     "EventLabel",
