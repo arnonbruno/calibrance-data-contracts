@@ -69,10 +69,13 @@ from .model_adequacy import (
     ModelAdequacyMetrics,
 )
 from .ontology import Intervention, ObservedEvent, Outcome, RootCause
+from .process_context import OperatingMode, ProcessEvent
 from .provenance import ProvenanceRecord
+from .quality_observation import QualityObservation
 from .rights import PERMISSIVE_LICENSE_IDS, DatasetRightsPolicy, TriBool
 from .signals import CanonicalSignals, QualityFlags
 from .task import ActivityFamily, TaskBinding, TaskDefinition, TaskTolerance
+from .timestamp_alignment import TimestampAlignment
 from .trajectory import CanonicalTrajectory, EventLabel, MediaStreamRef
 from .twin_model import (
     JointActuatorParameters,
@@ -151,8 +154,13 @@ __all__ = [
     "ObservedEvent",
     "Outcome",
     "RootCause",
+    # process_context
+    "OperatingMode",
+    "ProcessEvent",
     # provenance
     "ProvenanceRecord",
+    # quality_observation
+    "QualityObservation",
     # rights
     "PERMISSIVE_LICENSE_IDS",
     "DatasetRightsPolicy",
@@ -165,6 +173,8 @@ __all__ = [
     "TaskBinding",
     "TaskDefinition",
     "TaskTolerance",
+    # timestamp_alignment
+    "TimestampAlignment",
     # trajectory
     "CanonicalTrajectory",
     "EventLabel",
