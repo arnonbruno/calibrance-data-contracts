@@ -75,6 +75,14 @@ from .evidence import (
     TriState,
     UncertaintyDecomposition,
 )
+from .evidence_recommendation import (
+    ACTIVE_IDENTIFICATION_AUTHORITY,
+    AUTHORITY_VALUES,
+    REQUIRED_CONSTRAINT_KEYS,
+    EvidenceRecommendation,
+    EvidenceRecommendationValidationError,
+    default_constraints,
+)
 from .intervention_outcome import (
     HUMAN_DECISION_STATES,
     CalibrationRecommendation,
@@ -180,6 +188,13 @@ __all__ = [
     "UncertaintyDecomposition",
     "ModelBundleManifest",
     "EvidenceManifest",
+    # evidence_recommendation
+    "ACTIVE_IDENTIFICATION_AUTHORITY",
+    "AUTHORITY_VALUES",
+    "REQUIRED_CONSTRAINT_KEYS",
+    "EvidenceRecommendation",
+    "EvidenceRecommendationValidationError",
+    "default_constraints",
     # intervention_outcome
     "HUMAN_DECISION_STATES",
     "CalibrationRecommendation",
