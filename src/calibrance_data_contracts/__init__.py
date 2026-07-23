@@ -63,6 +63,18 @@ from .evidence import (
     TriState,
     UncertaintyDecomposition,
 )
+from .intervention_outcome import (
+    HUMAN_DECISION_STATES,
+    CalibrationRecommendation,
+    CausalAttribution,
+    HumanDecision,
+    InterventionOutcomeChain,
+    InterventionState,
+    NodeProvenance,
+    ObservedOutcome,
+    OutcomeType,
+    PhysicalIntervention,
+)
 from .model_adequacy import (
     ModelAdequacyClass,
     ModelAdequacyDecision,
@@ -145,6 +157,17 @@ __all__ = [
     "UncertaintyDecomposition",
     "ModelBundleManifest",
     "EvidenceManifest",
+    # intervention_outcome
+    "HUMAN_DECISION_STATES",
+    "CalibrationRecommendation",
+    "CausalAttribution",
+    "HumanDecision",
+    "InterventionOutcomeChain",
+    "InterventionState",
+    "NodeProvenance",
+    "ObservedOutcome",
+    "OutcomeType",
+    "PhysicalIntervention",
     # model_adequacy
     "ModelAdequacyClass",
     "ModelAdequacyDecision",
