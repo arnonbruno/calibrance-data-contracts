@@ -702,6 +702,218 @@ class AuditEvidenceEntry:
         }
 
 
+# ---------------------------------------------------------------------------
+# B1 — CalibrationObservationSet (physical signals from canonical telemetry)
+# ---------------------------------------------------------------------------
+
+
+def _as_float_matrix(name: str, value: Any) -> list[list[float]]:
+    """Normalize ndarray / nested sequences to list[list[float]]."""
+    if value is None:
+        raise CanonicalArtifactError(f"{name} is required")
+    if hasattr(value, "tolist") and not isinstance(value, (list, tuple)):
+        value = value.tolist()
+    if not isinstance(value, (list, tuple)):
+        raise CanonicalArtifactError(f"{name} must be a 2d sequence")
+    rows: list[list[float]] = []
+    for i, row in enumerate(value):
+        if hasattr(row, "tolist") and not isinstance(row, (list, tuple)):
+            row = row.tolist()
+        if not isinstance(row, (list, tuple)):
+            raise CanonicalArtifactError(f"{name}[{i}] must be a sequence")
+        try:
+            rows.append([float(x) for x in row])
+        except (TypeError, ValueError) as exc:
+            raise CanonicalArtifactError(f"{name}[{i}] must contain floats") from exc
+    return rows
+
+
+def _as_float_vector(name: str, value: Any) -> list[float]:
+    if value is None:
+        raise CanonicalArtifactError(f"{name} is required")
+    if hasattr(value, "tolist") and not isinstance(value, (list, tuple)):
+        value = value.tolist()
+    if not isinstance(value, (list, tuple)):
+        raise CanonicalArtifactError(f"{name} must be a 1d sequence")
+    try:
+        return [float(x) for x in value]
+    except (TypeError, ValueError) as exc:
+        raise CanonicalArtifactError(f"{name} must contain floats") from exc
+
+
+def _as_bool_vector(name: str, value: Any) -> list[bool]:
+    if value is None:
+        raise CanonicalArtifactError(f"{name} is required")
+    if hasattr(value, "tolist") and not isinstance(value, (list, tuple)):
+        value = value.tolist()
+    if not isinstance(value, (list, tuple)):
+        raise CanonicalArtifactError(f"{name} must be a 1d sequence")
+    return [bool(x) for x in value]
+
+
+def _as_dict_list(name: str, value: Sequence[Mapping[str, Any]] | None) -> list[dict[str, Any]]:
+    items = list(value or [])
+    out: list[dict[str, Any]] = []
+    for i, item in enumerate(items):
+        if not isinstance(item, Mapping):
+            raise CanonicalArtifactError(f"{name}[{i}] must be a mapping")
+        out.append(dict(item))
+    return out
+
+
+@dataclass
+class CalibrationObservationSet:
+    """Estimator-ready physical signals derived from canonical telemetry (B1).
+
+    Arrays are stored as nested Python lists so the contracts package stays
+    free of a numpy dependency. Callers may pass array-like objects; they are
+    normalized in ``__post_init__``. Digests hash the JSON-canonical payload
+    (lists), so identical numeric contents yield a deterministic digest.
+    """
+
+    observation_set_id: str
+    dataset_manifest_id: str
+    asset_id: str
+    task_id: str
+    robot_model: str
+
+    # Physical signals (per sample, per joint) — shapes [N, n_joints] / [N]
+    q: list[list[float]]
+    q_dot: list[list[float]]
+    q_ddot: list[list[float]]
+    effort: list[list[float]]
+    sample_times: list[float]
+
+    quality_mask: list[bool]
+    activity_segments: list[dict]
+    process_context: dict
+
+    signal_provenance: dict
+    transformation_log: list[dict]
+    observation_set_digest: str = ""
+
+    n_samples: int = 0
+    n_joints: int = 0
+    units: dict[str, str] = field(
+        default_factory=lambda: {
+            "q": "rad",
+            "q_dot": "rad/s",
+            "q_ddot": "rad/s^2",
+            "effort": "N·m",
+            "sample_times": "s",
+        }
+    )
+    evidence_tier: str = EvidenceTier.SYNTHETIC.value
+    created_at: str = field(default_factory=_utc_now_iso)
+
+    def __post_init__(self) -> None:
+        self.observation_set_id = _require_nonempty("observation_set_id", self.observation_set_id)
+        self.dataset_manifest_id = _require_nonempty(
+            "dataset_manifest_id", self.dataset_manifest_id
+        )
+        self.asset_id = _require_nonempty("asset_id", self.asset_id)
+        self.task_id = _require_nonempty("task_id", self.task_id)
+        self.robot_model = _require_nonempty("robot_model", self.robot_model)
+
+        self.q = _as_float_matrix("q", self.q)
+        self.q_dot = _as_float_matrix("q_dot", self.q_dot)
+        self.q_ddot = _as_float_matrix("q_ddot", self.q_ddot)
+        self.effort = _as_float_matrix("effort", self.effort)
+        self.sample_times = _as_float_vector("sample_times", self.sample_times)
+        self.quality_mask = _as_bool_vector("quality_mask", self.quality_mask)
+
+        if not self.q:
+            raise CanonicalArtifactError("q must be non-empty")
+        n = len(self.q)
+        n_joints = len(self.q[0])
+        if n_joints < 1:
+            raise CanonicalArtifactError("q must have at least one joint column")
+        for name, matrix in (
+            ("q", self.q),
+            ("q_dot", self.q_dot),
+            ("q_ddot", self.q_ddot),
+            ("effort", self.effort),
+        ):
+            if len(matrix) != n:
+                raise CanonicalArtifactError(f"{name} length {len(matrix)} != n_samples {n}")
+            for i, row in enumerate(matrix):
+                if len(row) != n_joints:
+                    raise CanonicalArtifactError(
+                        f"{name}[{i}] length {len(row)} != n_joints {n_joints}"
+                    )
+        if len(self.sample_times) != n:
+            raise CanonicalArtifactError(
+                f"sample_times length {len(self.sample_times)} != n_samples {n}"
+            )
+        if len(self.quality_mask) != n:
+            raise CanonicalArtifactError(
+                f"quality_mask length {len(self.quality_mask)} != n_samples {n}"
+            )
+
+        self.n_samples = int(n)
+        self.n_joints = int(n_joints)
+        self.activity_segments = _as_dict_list("activity_segments", self.activity_segments)
+        self.process_context = _as_dict("process_context", self.process_context)
+        self.signal_provenance = _as_dict("signal_provenance", self.signal_provenance)
+        self.transformation_log = _as_dict_list("transformation_log", self.transformation_log)
+        if not self.transformation_log:
+            raise CanonicalArtifactError(
+                "transformation_log is required (every observation set must record transforms)"
+            )
+        self.units = {str(k): str(v) for k, v in dict(self.units or {}).items()}
+        for required in ("q", "q_dot", "q_ddot", "effort", "sample_times"):
+            if required not in self.units:
+                raise CanonicalArtifactError(f"units must declare {required!r}")
+        self.evidence_tier = _normalize_evidence_tier(self.evidence_tier)
+        self.created_at = _require_nonempty("created_at", self.created_at)
+
+        expected = self.compute_digest()
+        if not self.observation_set_digest:
+            self.observation_set_digest = expected
+        else:
+            self.observation_set_digest = _require_digest(
+                "observation_set_digest", self.observation_set_digest
+            )
+            if self.observation_set_digest != expected:
+                raise CanonicalArtifactError(
+                    "observation_set_digest does not match canonical contents "
+                    "(immutable digest mismatch)"
+                )
+
+    def _digest_payload(self) -> dict[str, Any]:
+        return {
+            "observation_set_id": self.observation_set_id,
+            "dataset_manifest_id": self.dataset_manifest_id,
+            "asset_id": self.asset_id,
+            "task_id": self.task_id,
+            "robot_model": self.robot_model,
+            "q": self.q,
+            "q_dot": self.q_dot,
+            "q_ddot": self.q_ddot,
+            "effort": self.effort,
+            "sample_times": self.sample_times,
+            "quality_mask": self.quality_mask,
+            "activity_segments": self.activity_segments,
+            "process_context": self.process_context,
+            "signal_provenance": self.signal_provenance,
+            "transformation_log": self.transformation_log,
+            "n_samples": self.n_samples,
+            "n_joints": self.n_joints,
+            "units": self.units,
+            "evidence_tier": self.evidence_tier,
+        }
+
+    def compute_digest(self) -> str:
+        return sha256_hex(self._digest_payload())
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            **self._digest_payload(),
+            "observation_set_digest": self.observation_set_digest,
+            "created_at": self.created_at,
+        }
+
+
 def evidence_field_inventory() -> dict[str, list[str]]:
     """Acceptance helper: evidence provenance fields per artifact schema."""
     return {
@@ -743,6 +955,14 @@ def evidence_field_inventory() -> dict[str, list[str]]:
             "artifact_digests",
             "evidence_tier",
         ],
+        "CalibrationObservationSet": [
+            "observation_set_digest",
+            "evidence_tier",
+            "signal_provenance",
+            "transformation_log",
+            "quality_mask",
+            "dataset_manifest_id",
+        ],
     }
 
 
@@ -756,6 +976,7 @@ __all__ = [
     "AuditEvidenceEntry",
     "CANDIDATE_STATUSES",
     "CalibrationDatasetManifest",
+    "CalibrationObservationSet",
     "CalibrationWorkflow",
     "CalibrationWorkflowState",
     "CandidateStatus",

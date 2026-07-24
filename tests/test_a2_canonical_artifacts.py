@@ -215,6 +215,7 @@ def test_evidence_inventory_covers_all_schemas() -> None:
         "ServerValidationRun",
         "CalibrationWorkflow",
         "AuditEvidenceEntry",
+        "CalibrationObservationSet",
     }
     for fields in inventory.values():
         assert fields
@@ -222,3 +223,52 @@ def test_evidence_inventory_covers_all_schemas() -> None:
 
 def test_sha256_hex_stable() -> None:
     assert sha256_hex({"b": 1, "a": 2}) == sha256_hex({"a": 2, "b": 1})
+
+
+def _observation_set(**overrides):
+    from calibrance_data_contracts.canonical_artifacts import CalibrationObservationSet
+
+    data = dict(
+        observation_set_id="obs-1",
+        dataset_manifest_id="ds-1",
+        asset_id="asset-1",
+        task_id="pick-place",
+        robot_model="ur3e",
+        q=[[0.1, 0.2, 0.3, 0.4, 0.5, 0.6], [0.11, 0.21, 0.31, 0.41, 0.51, 0.61]],
+        q_dot=[[0.01] * 6, [0.02] * 6],
+        q_ddot=[[0.001] * 6, [0.002] * 6],
+        effort=[[1.0] * 6, [1.1] * 6],
+        sample_times=[0.0, 0.008],
+        quality_mask=[True, True],
+        activity_segments=[{"segment_id": "seg-0", "start_idx": 0, "end_idx": 1}],
+        process_context={"task_id": "pick-place"},
+        signal_provenance={"q": "joint_position", "q_ddot": "derived"},
+        transformation_log=[{"step": "unit_conversion", "field": "q", "from": "rad", "to": "rad"}],
+        evidence_tier="synthetic",
+    )
+    data.update(overrides)
+    return CalibrationObservationSet(**data)
+
+
+def test_observation_set_digest_deterministic() -> None:
+    a = _observation_set()
+    b = _observation_set()
+    assert a.observation_set_digest == b.observation_set_digest
+    assert len(a.observation_set_digest) == 64
+    assert a.n_samples == 2
+    assert a.n_joints == 6
+
+
+def test_observation_set_requires_transformation_log() -> None:
+    with pytest.raises(CanonicalArtifactError, match="transformation_log"):
+        _observation_set(transformation_log=[])
+
+
+def test_observation_set_rejects_digest_mismatch() -> None:
+    with pytest.raises(CanonicalArtifactError, match="immutable digest"):
+        _observation_set(observation_set_digest="a" * 64)
+
+
+def test_observation_set_shape_mismatch() -> None:
+    with pytest.raises(CanonicalArtifactError, match="sample_times"):
+        _observation_set(sample_times=[0.0])
