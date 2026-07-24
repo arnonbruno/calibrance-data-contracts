@@ -2,9 +2,16 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
+
+from calibrance_data_contracts.honesty import (
+    HonestyMarkingError,
+    default_parameter_source,
+    normalize_parameter_source,
+    validate_server_estimated_claim,
+)
 
 
 class TwinDynamicsContext(BaseModel):
@@ -79,3 +86,23 @@ class TwinParameterSet(BaseModel):
     payload_mass_kg: float = Field(default=0.0, ge=0.0)
     payload_cog_m: tuple[float, float, float] = (0.0, 0.0, 0.0)
     schema_version: str = "1.0"
+    # Honesty markings — defaults never claim server estimation.
+    parameter_source: str = Field(default_factory=default_parameter_source)
+    server_estimated: bool = False
+    estimator_run_id: Optional[str] = None
+
+    @model_validator(mode="after")
+    def _check_honesty(self) -> TwinParameterSet:
+        try:
+            source = normalize_parameter_source(self.parameter_source)
+            validate_server_estimated_claim(
+                server_estimated=bool(self.server_estimated),
+                estimator_run_id=self.estimator_run_id,
+                parameter_source=source,
+            )
+        except HonestyMarkingError as exc:
+            raise ValueError(str(exc)) from exc
+        self.parameter_source = source
+        if not self.server_estimated:
+            self.estimator_run_id = None
+        return self

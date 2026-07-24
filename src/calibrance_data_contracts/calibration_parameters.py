@@ -3,9 +3,16 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Literal
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, model_validator
+
+from calibrance_data_contracts.honesty import (
+    HonestyMarkingError,
+    default_parameter_source,
+    normalize_parameter_source,
+    validate_server_estimated_claim,
+)
 
 
 class ParameterGroupId(str, Enum):
@@ -70,6 +77,10 @@ class IdentifiedParameterVector(BaseModel):
     covariance_diag: tuple[float, ...] | None = None
     method: str = "least_squares"
     active_groups: tuple[ParameterGroupId, ...] = ()
+    # Honesty markings — defaults never claim server estimation.
+    parameter_source: str = Field(default_factory=default_parameter_source)
+    server_estimated: bool = False
+    estimator_run_id: Optional[str] = None
 
     @model_validator(mode="after")
     def _check_vector_lengths(self) -> IdentifiedParameterVector:
@@ -79,6 +90,18 @@ class IdentifiedParameterVector(BaseModel):
             raise ValueError("covariance_diag must match values length")
         if any(v < 0 for v in (self.covariance_diag or ())):
             raise ValueError("covariance_diag entries must be non-negative")
+        try:
+            source = normalize_parameter_source(self.parameter_source)
+            validate_server_estimated_claim(
+                server_estimated=bool(self.server_estimated),
+                estimator_run_id=self.estimator_run_id,
+                parameter_source=source,
+            )
+        except HonestyMarkingError as exc:
+            raise ValueError(str(exc)) from exc
+        self.parameter_source = source
+        if not self.server_estimated:
+            self.estimator_run_id = None
         return self
 
 

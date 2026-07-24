@@ -11,6 +11,15 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Optional
 
+from calibrance_data_contracts.honesty import (
+    HonestyMarkingError,
+    ValidationSource,
+    assert_no_high_authority_label,
+    default_validation_source,
+    normalize_validation_source,
+    validate_server_estimated_claim,
+)
+
 
 class CandidateDisposition(str, Enum):
     """Disposition after counterfactual validation (pre-human gate)."""
@@ -92,6 +101,10 @@ class CandidateValidation:
     outcome_chain_id: Optional[str] = None
     evidence_recommendation_triggered: bool = False
 
+    # Honesty markings — current flows accept caller-supplied metrics.
+    validation_source: str = field(default_factory=default_validation_source)
+    independently_reproduced: bool = False
+
     def __post_init__(self) -> None:
         if not self.validation_id:
             raise CandidateValidationError("validation_id is required")
@@ -154,6 +167,35 @@ class CandidateValidation:
         self.warnings = warnings
         self.quality_observation_ids = list(self.quality_observation_ids or [])
 
+        try:
+            self.validation_source = normalize_validation_source(self.validation_source)
+        except HonestyMarkingError as exc:
+            raise CandidateValidationError(str(exc)) from exc
+        self.independently_reproduced = bool(self.independently_reproduced)
+        if (
+            self.validation_source != ValidationSource.SERVER_COMPUTED.value
+            and self.independently_reproduced
+        ):
+            raise CandidateValidationError(
+                "independently_reproduced=true requires validation_source=server_computed"
+            )
+        try:
+            if not self.independently_reproduced:
+                assert_no_high_authority_label(
+                    server_estimated=False,
+                    independently_reproduced=False,
+                    label=self.credibility_status,
+                )
+                for label_value in self.labels.values():
+                    if isinstance(label_value, str):
+                        assert_no_high_authority_label(
+                            server_estimated=False,
+                            independently_reproduced=False,
+                            label=label_value,
+                        )
+        except HonestyMarkingError as exc:
+            raise CandidateValidationError(str(exc)) from exc
+
         if self.created_at.tzinfo is None:
             self.created_at = self.created_at.replace(tzinfo=timezone.utc)
 
@@ -192,6 +234,8 @@ class CandidateValidation:
             "quality_observation_ids": list(self.quality_observation_ids),
             "outcome_chain_id": self.outcome_chain_id,
             "evidence_recommendation_triggered": bool(self.evidence_recommendation_triggered),
+            "validation_source": self.validation_source,
+            "independently_reproduced": bool(self.independently_reproduced),
         }
 
 
