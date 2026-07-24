@@ -1,4 +1,9 @@
-"""Calibration parameter identification contracts (Gate H1)."""
+"""Calibration parameter identification contracts (Gate H1).
+
+AUTOCAL-1 A1: ParameterGroupId G1–G5 labels are historical grouping only.
+Persistent cross-repository identifiers live in
+``calibrance_data_contracts.canonical_taxonomy`` (semantic ``ur.*`` IDs).
+"""
 
 from __future__ import annotations
 
@@ -16,7 +21,10 @@ from calibrance_data_contracts.honesty import (
 
 
 class ParameterGroupId(str, Enum):
-    """Identifiable dynamics parameter groups for twin calibration."""
+    """Identifiable dynamics parameter groups for twin calibration.
+
+    Deprecated as persistent cross-repo IDs — use semantic ``ur.*`` taxonomy IDs.
+    """
 
     G1_INERTIAL = "G1_inertial"
     G2_FRICTION = "G2_friction"

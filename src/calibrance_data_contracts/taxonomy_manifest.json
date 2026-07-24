@@ -1,0 +1,928 @@
+{
+  "document_type": "autocal1_parameter_taxonomy_manifest",
+  "version": "1.0.0",
+  "canonical_parameters": [
+    {
+      "parameter_id": "ur.payload.mass",
+      "display_name": "Payload mass",
+      "group_id": "payload",
+      "unit": "kg",
+      "shape": "scalar",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": null,
+      "default_bounds": {
+        "lower": 0.0,
+        "upper": 50.0
+      },
+      "physical_constraints": {
+        "min": 0.0,
+        "must_be_positive": false
+      },
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_torque",
+          "joint_position"
+        ],
+        "min_excitation": 0.5
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "scalar",
+      "deprecated_aliases": {
+        "h1": "G4_payload.payload_mass_kg",
+        "h5": "G3_payload.payload_mass_kg",
+        "foundry": "link_6_mass_kg",
+        "p7": "payload_mass_kg"
+      },
+      "notes": "Foundry alias link_6_mass_kg is approximate: wrist-link mass is often used as a day-one payload proxy, not a true tool mass."
+    },
+    {
+      "parameter_id": "ur.payload.center_of_mass",
+      "display_name": "Payload center of mass",
+      "group_id": "payload",
+      "unit": "m",
+      "shape": "vector3",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": null,
+      "default_bounds": {
+        "lower": -0.5,
+        "upper": 0.5
+      },
+      "physical_constraints": {
+        "component_abs_max_m": 0.5
+      },
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_torque",
+          "joint_position"
+        ],
+        "min_excitation": 0.5
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "vector",
+      "deprecated_aliases": {
+        "h1": "G4_payload.payload_cog_m",
+        "h5": "G3_payload.payload_cog_m"
+      },
+      "notes": ""
+    },
+    {
+      "parameter_id": "ur.payload.center_of_mass.x",
+      "display_name": "Payload CoM X",
+      "group_id": "payload",
+      "unit": "m",
+      "shape": "scalar",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": null,
+      "default_bounds": {
+        "lower": -0.5,
+        "upper": 0.5
+      },
+      "physical_constraints": {
+        "abs_max_m": 0.5
+      },
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_torque",
+          "joint_position"
+        ],
+        "min_excitation": 0.5
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "scalar",
+      "deprecated_aliases": {},
+      "notes": ""
+    },
+    {
+      "parameter_id": "ur.payload.center_of_mass.y",
+      "display_name": "Payload CoM Y",
+      "group_id": "payload",
+      "unit": "m",
+      "shape": "scalar",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": null,
+      "default_bounds": {
+        "lower": -0.5,
+        "upper": 0.5
+      },
+      "physical_constraints": {
+        "abs_max_m": 0.5
+      },
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_torque",
+          "joint_position"
+        ],
+        "min_excitation": 0.5
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "scalar",
+      "deprecated_aliases": {},
+      "notes": ""
+    },
+    {
+      "parameter_id": "ur.payload.center_of_mass.z",
+      "display_name": "Payload CoM Z",
+      "group_id": "payload",
+      "unit": "m",
+      "shape": "scalar",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": null,
+      "default_bounds": {
+        "lower": -0.5,
+        "upper": 0.5
+      },
+      "physical_constraints": {
+        "abs_max_m": 0.5
+      },
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_torque",
+          "joint_position"
+        ],
+        "min_excitation": 0.5
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "scalar",
+      "deprecated_aliases": {},
+      "notes": ""
+    },
+    {
+      "parameter_id": "ur.joint.friction.viscous",
+      "display_name": "Viscous friction",
+      "group_id": "friction",
+      "unit": "N\u00b7m\u00b7s/rad",
+      "shape": "scalar",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": "all_joints",
+      "default_bounds": {
+        "lower": 0.0,
+        "upper": 50.0
+      },
+      "physical_constraints": {
+        "min": 0.0,
+        "must_be_positive": false
+      },
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_torque",
+          "joint_velocity"
+        ],
+        "min_excitation": 0.5
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "scalar",
+      "deprecated_aliases": {
+        "h1": "G2_friction.viscous_nm_s_rad",
+        "h5": "G1_friction.viscous",
+        "foundry": "viscous_friction_Nms_rad",
+        "p7": "friction_viscous"
+      },
+      "notes": ""
+    },
+    {
+      "parameter_id": "ur.joint.friction.coulomb_positive",
+      "display_name": "Coulomb friction (positive)",
+      "group_id": "friction",
+      "unit": "N\u00b7m",
+      "shape": "scalar",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": "all_joints",
+      "default_bounds": {
+        "lower": 0.0,
+        "upper": 50.0
+      },
+      "physical_constraints": {
+        "min": 0.0
+      },
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_torque",
+          "joint_velocity"
+        ],
+        "min_excitation": 0.5
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "scalar",
+      "deprecated_aliases": {
+        "h1": "G2_friction.coulomb_pos_nm",
+        "h5": "G1_friction.coulomb_pos_nm",
+        "p7": "friction_coulomb"
+      },
+      "notes": ""
+    },
+    {
+      "parameter_id": "ur.joint.friction.coulomb_negative",
+      "display_name": "Coulomb friction (negative)",
+      "group_id": "friction",
+      "unit": "N\u00b7m",
+      "shape": "scalar",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": "all_joints",
+      "default_bounds": {
+        "lower": 0.0,
+        "upper": 50.0
+      },
+      "physical_constraints": {
+        "min": 0.0
+      },
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_torque",
+          "joint_velocity"
+        ],
+        "min_excitation": 0.5
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "scalar",
+      "deprecated_aliases": {
+        "h1": "G2_friction.coulomb_neg_nm",
+        "h5": "G1_friction.coulomb_neg_nm"
+      },
+      "notes": ""
+    },
+    {
+      "parameter_id": "ur.actuator.torque_bias",
+      "display_name": "Actuator torque bias",
+      "group_id": "actuator",
+      "unit": "N\u00b7m",
+      "shape": "scalar",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": "all_joints",
+      "default_bounds": {
+        "lower": -20.0,
+        "upper": 20.0
+      },
+      "physical_constraints": {},
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_torque",
+          "joint_current"
+        ],
+        "min_excitation": 0.5
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "scalar",
+      "deprecated_aliases": {
+        "h1": "G3_actuator.torque_bias_nm",
+        "h5": "G2_current_bias.torque_bias_nm"
+      },
+      "notes": ""
+    },
+    {
+      "parameter_id": "ur.actuator.torque_constant",
+      "display_name": "Actuator torque constant",
+      "group_id": "actuator",
+      "unit": "N\u00b7m/A",
+      "shape": "scalar",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": "all_joints",
+      "default_bounds": {
+        "lower": 0.1,
+        "upper": 50.0
+      },
+      "physical_constraints": {
+        "min": 0.0,
+        "must_be_positive": true
+      },
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_torque",
+          "joint_current"
+        ],
+        "min_excitation": 0.5
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "scalar",
+      "deprecated_aliases": {
+        "h1": "G3_actuator.torque_constant_nm_per_a",
+        "h5": "G4_current_scale.current_to_torque_scale"
+      },
+      "notes": "H5 current_to_torque_scale is related but not identical to Kt; mapped here as the current-to-torque scale parameter."
+    },
+    {
+      "parameter_id": "ur.actuator.delay",
+      "display_name": "Actuator delay",
+      "group_id": "actuator",
+      "unit": "s",
+      "shape": "scalar",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": "all_joints",
+      "default_bounds": {
+        "lower": 0.0,
+        "upper": 0.1
+      },
+      "physical_constraints": {
+        "min": 0.0
+      },
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_torque",
+          "joint_current",
+          "joint_velocity"
+        ],
+        "min_excitation": 0.3
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "scalar",
+      "deprecated_aliases": {
+        "h5": "G5_actuator_lag.actuator_lag_s"
+      },
+      "notes": ""
+    },
+    {
+      "parameter_id": "ur.sensor.position_bias",
+      "display_name": "Position sensor bias",
+      "group_id": "sensor",
+      "unit": "rad",
+      "shape": "scalar",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": "all_joints",
+      "default_bounds": {
+        "lower": -0.1,
+        "upper": 0.1
+      },
+      "physical_constraints": {},
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_position"
+        ],
+        "min_excitation": 0.2
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "scalar",
+      "deprecated_aliases": {},
+      "notes": ""
+    },
+    {
+      "parameter_id": "ur.sensor.velocity_bias",
+      "display_name": "Velocity sensor bias",
+      "group_id": "sensor",
+      "unit": "rad/s",
+      "shape": "scalar",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": "all_joints",
+      "default_bounds": {
+        "lower": -0.5,
+        "upper": 0.5
+      },
+      "physical_constraints": {},
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_velocity"
+        ],
+        "min_excitation": 0.2
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "scalar",
+      "deprecated_aliases": {},
+      "notes": ""
+    },
+    {
+      "parameter_id": "ur.sensor.torque_bias",
+      "display_name": "Torque sensor bias",
+      "group_id": "sensor",
+      "unit": "N\u00b7m",
+      "shape": "scalar",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": "all_joints",
+      "default_bounds": {
+        "lower": -10.0,
+        "upper": 10.0
+      },
+      "physical_constraints": {},
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_torque"
+        ],
+        "min_excitation": 0.2
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "scalar",
+      "deprecated_aliases": {},
+      "notes": ""
+    },
+    {
+      "parameter_id": "ur.link.inertia",
+      "display_name": "Link inertia",
+      "group_id": "inertial",
+      "unit": "kg\u00b7m\u00b2",
+      "shape": "matrix",
+      "robot_model_scope": "all_ur_eseries",
+      "joint_scope": "all_joints",
+      "default_bounds": {
+        "lower": 1e-06,
+        "upper": 100.0
+      },
+      "physical_constraints": {
+        "min": 1e-06,
+        "must_be_positive": true
+      },
+      "identifiability_requirements": {
+        "required_signals": [
+          "joint_torque",
+          "joint_position",
+          "joint_acceleration"
+        ],
+        "min_excitation": 0.5
+      },
+      "supported_estimators": [
+        "constrained_nls",
+        "wls",
+        "rls"
+      ],
+      "profile_type": "matrix",
+      "deprecated_aliases": {
+        "h1": "G1_inertial.link_inertials",
+        "p7": "inertia_kg_m2"
+      },
+      "notes": ""
+    }
+  ],
+  "aliases": [
+    {
+      "source": "h1",
+      "old_id": "G4_payload.payload_mass_kg",
+      "canonical_id": "ur.payload.mass",
+      "kind": "calibration",
+      "unit": "kg",
+      "notes": "Foundry alias link_6_mass_kg is approximate: wrist-link mass is often used as a day-one payload proxy, not a true tool mass."
+    },
+    {
+      "source": "h5",
+      "old_id": "G3_payload.payload_mass_kg",
+      "canonical_id": "ur.payload.mass",
+      "kind": "calibration",
+      "unit": "kg",
+      "notes": "Foundry alias link_6_mass_kg is approximate: wrist-link mass is often used as a day-one payload proxy, not a true tool mass."
+    },
+    {
+      "source": "foundry",
+      "old_id": "link_6_mass_kg",
+      "canonical_id": "ur.payload.mass",
+      "kind": "calibration",
+      "unit": "kg",
+      "notes": "Foundry alias link_6_mass_kg is approximate: wrist-link mass is often used as a day-one payload proxy, not a true tool mass."
+    },
+    {
+      "source": "p7",
+      "old_id": "payload_mass_kg",
+      "canonical_id": "ur.payload.mass",
+      "kind": "calibration",
+      "unit": "kg",
+      "notes": "Foundry alias link_6_mass_kg is approximate: wrist-link mass is often used as a day-one payload proxy, not a true tool mass."
+    },
+    {
+      "source": "h1",
+      "old_id": "G4_payload.payload_cog_m",
+      "canonical_id": "ur.payload.center_of_mass",
+      "kind": "calibration",
+      "unit": "m",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "G3_payload.payload_cog_m",
+      "canonical_id": "ur.payload.center_of_mass",
+      "kind": "calibration",
+      "unit": "m",
+      "notes": ""
+    },
+    {
+      "source": "h1",
+      "old_id": "G2_friction.viscous_nm_s_rad",
+      "canonical_id": "ur.joint.friction.viscous",
+      "kind": "calibration",
+      "unit": "N\u00b7m\u00b7s/rad",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "G1_friction.viscous",
+      "canonical_id": "ur.joint.friction.viscous",
+      "kind": "calibration",
+      "unit": "N\u00b7m\u00b7s/rad",
+      "notes": ""
+    },
+    {
+      "source": "foundry",
+      "old_id": "viscous_friction_Nms_rad",
+      "canonical_id": "ur.joint.friction.viscous",
+      "kind": "calibration",
+      "unit": "N\u00b7m\u00b7s/rad",
+      "notes": ""
+    },
+    {
+      "source": "p7",
+      "old_id": "friction_viscous",
+      "canonical_id": "ur.joint.friction.viscous",
+      "kind": "calibration",
+      "unit": "N\u00b7m\u00b7s/rad",
+      "notes": ""
+    },
+    {
+      "source": "h1",
+      "old_id": "G2_friction.coulomb_pos_nm",
+      "canonical_id": "ur.joint.friction.coulomb_positive",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "G1_friction.coulomb_pos_nm",
+      "canonical_id": "ur.joint.friction.coulomb_positive",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "p7",
+      "old_id": "friction_coulomb",
+      "canonical_id": "ur.joint.friction.coulomb_positive",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h1",
+      "old_id": "G2_friction.coulomb_neg_nm",
+      "canonical_id": "ur.joint.friction.coulomb_negative",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "G1_friction.coulomb_neg_nm",
+      "canonical_id": "ur.joint.friction.coulomb_negative",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h1",
+      "old_id": "G3_actuator.torque_bias_nm",
+      "canonical_id": "ur.actuator.torque_bias",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "G2_current_bias.torque_bias_nm",
+      "canonical_id": "ur.actuator.torque_bias",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h1",
+      "old_id": "G3_actuator.torque_constant_nm_per_a",
+      "canonical_id": "ur.actuator.torque_constant",
+      "kind": "calibration",
+      "unit": "N\u00b7m/A",
+      "notes": "H5 current_to_torque_scale is related but not identical to Kt; mapped here as the current-to-torque scale parameter."
+    },
+    {
+      "source": "h5",
+      "old_id": "G4_current_scale.current_to_torque_scale",
+      "canonical_id": "ur.actuator.torque_constant",
+      "kind": "calibration",
+      "unit": "N\u00b7m/A",
+      "notes": "H5 current_to_torque_scale is related but not identical to Kt; mapped here as the current-to-torque scale parameter."
+    },
+    {
+      "source": "h5",
+      "old_id": "G5_actuator_lag.actuator_lag_s",
+      "canonical_id": "ur.actuator.delay",
+      "kind": "calibration",
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "source": "h1",
+      "old_id": "G1_inertial.link_inertials",
+      "canonical_id": "ur.link.inertia",
+      "kind": "calibration",
+      "unit": "kg\u00b7m\u00b2",
+      "notes": ""
+    },
+    {
+      "source": "p7",
+      "old_id": "inertia_kg_m2",
+      "canonical_id": "ur.link.inertia",
+      "kind": "calibration",
+      "unit": "kg\u00b7m\u00b2",
+      "notes": ""
+    },
+    {
+      "source": "h1",
+      "old_id": "payload_mass_kg",
+      "canonical_id": "ur.payload.mass",
+      "kind": "calibration",
+      "unit": "kg",
+      "notes": ""
+    },
+    {
+      "source": "h1",
+      "old_id": "payload_cog_m",
+      "canonical_id": "ur.payload.center_of_mass",
+      "kind": "calibration",
+      "unit": "m",
+      "notes": ""
+    },
+    {
+      "source": "h1",
+      "old_id": "viscous_nm_s_rad",
+      "canonical_id": "ur.joint.friction.viscous",
+      "kind": "calibration",
+      "unit": "N\u00b7m\u00b7s/rad",
+      "notes": ""
+    },
+    {
+      "source": "h1",
+      "old_id": "coulomb_pos_nm",
+      "canonical_id": "ur.joint.friction.coulomb_positive",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h1",
+      "old_id": "coulomb_neg_nm",
+      "canonical_id": "ur.joint.friction.coulomb_negative",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h1",
+      "old_id": "torque_constant_nm_per_a",
+      "canonical_id": "ur.actuator.torque_constant",
+      "kind": "calibration",
+      "unit": "N\u00b7m/A",
+      "notes": ""
+    },
+    {
+      "source": "h1",
+      "old_id": "torque_bias_nm",
+      "canonical_id": "ur.actuator.torque_bias",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h1",
+      "old_id": "link_inertials",
+      "canonical_id": "ur.link.inertia",
+      "kind": "calibration",
+      "unit": "kg\u00b7m\u00b2",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "coulomb_pos_nm",
+      "canonical_id": "ur.joint.friction.coulomb_positive",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "coulomb_neg_nm",
+      "canonical_id": "ur.joint.friction.coulomb_negative",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "viscous_nm_s_rad",
+      "canonical_id": "ur.joint.friction.viscous",
+      "kind": "calibration",
+      "unit": "N\u00b7m\u00b7s/rad",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "torque_bias_nm",
+      "canonical_id": "ur.actuator.torque_bias",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "payload_mass_kg",
+      "canonical_id": "ur.payload.mass",
+      "kind": "calibration",
+      "unit": "kg",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "payload_cog_m",
+      "canonical_id": "ur.payload.center_of_mass",
+      "kind": "calibration",
+      "unit": "m",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "current_to_torque_scale",
+      "canonical_id": "ur.actuator.torque_constant",
+      "kind": "calibration",
+      "unit": "N\u00b7m/A",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "actuator_lag_s",
+      "canonical_id": "ur.actuator.delay",
+      "kind": "calibration",
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "G1_friction.viscous_nm_s_rad",
+      "canonical_id": "ur.joint.friction.viscous",
+      "kind": "calibration",
+      "unit": "N\u00b7m\u00b7s/rad",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "G1.viscous_nm_s_rad",
+      "canonical_id": "ur.joint.friction.viscous",
+      "kind": "calibration",
+      "unit": "N\u00b7m\u00b7s/rad",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "G1.coulomb_pos_nm",
+      "canonical_id": "ur.joint.friction.coulomb_positive",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "G1.coulomb_neg_nm",
+      "canonical_id": "ur.joint.friction.coulomb_negative",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "G2.torque_bias_nm",
+      "canonical_id": "ur.actuator.torque_bias",
+      "kind": "calibration",
+      "unit": "N\u00b7m",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "G3.payload_mass_kg",
+      "canonical_id": "ur.payload.mass",
+      "kind": "calibration",
+      "unit": "kg",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "G3.payload_cog_m",
+      "canonical_id": "ur.payload.center_of_mass",
+      "kind": "calibration",
+      "unit": "m",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "G4.current_to_torque_scale",
+      "canonical_id": "ur.actuator.torque_constant",
+      "kind": "calibration",
+      "unit": "N\u00b7m/A",
+      "notes": ""
+    },
+    {
+      "source": "h5",
+      "old_id": "G5.actuator_lag_s",
+      "canonical_id": "ur.actuator.delay",
+      "kind": "calibration",
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "source": "foundry",
+      "old_id": "payload_mass_kg",
+      "canonical_id": "ur.payload.mass",
+      "kind": "calibration",
+      "unit": "kg",
+      "notes": ""
+    },
+    {
+      "source": "p7",
+      "old_id": "mass_kg",
+      "canonical_id": "ur.payload.mass",
+      "kind": "calibration",
+      "unit": "kg",
+      "notes": ""
+    },
+    {
+      "source": "foundry",
+      "old_id": "measurement_noise_std",
+      "canonical_id": null,
+      "kind": "noise_model",
+      "unit": null,
+      "notes": "Excluded from canonical calibration taxonomy."
+    },
+    {
+      "source": "p7",
+      "old_id": "stiffness_nm_rad",
+      "canonical_id": null,
+      "kind": "not_in_canonical_set",
+      "unit": null,
+      "notes": "Excluded from canonical calibration taxonomy."
+    }
+  ],
+  "non_calibration_ids": {
+    "foundry": {
+      "measurement_noise_std": "noise_model"
+    },
+    "p7": {
+      "stiffness_nm_rad": "not_in_canonical_set"
+    }
+  },
+  "acceptance_gates": {
+    "unmapped_parameter_ids": 0,
+    "ambiguous_parameter_aliases": 0,
+    "unit_conflicts": 0,
+    "product_foundry_taxonomy_differences": 0,
+    "historical_profile_deserialization_failures": 0
+  },
+  "sources": [
+    "foundry",
+    "h1",
+    "h5",
+    "p7"
+  ]
+}
