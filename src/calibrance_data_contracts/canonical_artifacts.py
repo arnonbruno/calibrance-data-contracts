@@ -201,7 +201,11 @@ def _normalize_window(name: str, value: Mapping[str, Any] | None) -> dict[str, A
     end = window.get("end")
     if start is None or end is None:
         raise CanonicalArtifactError(f"{name} must include 'start' and 'end'")
-    return {"start": str(start), "end": str(end), **{k: v for k, v in window.items() if k not in ("start", "end")}}
+    return {
+        "start": str(start),
+        "end": str(end),
+        **{k: v for k, v in window.items() if k not in ("start", "end")},
+    }
 
 
 def _normalize_evidence_tier(value: str | EvidenceTier | None) -> str:
@@ -270,9 +274,7 @@ class CalibrationDatasetManifest:
         self.available_signals = _as_str_list("available_signals", self.available_signals)
         self.estimation_window = _normalize_window("estimation_window", self.estimation_window)
         self.held_out_window = _normalize_window("held_out_window", self.held_out_window)
-        self.split_strategy = _enum_value(
-            SplitStrategy, self.split_strategy, name="split_strategy"
-        )
+        self.split_strategy = _enum_value(SplitStrategy, self.split_strategy, name="split_strategy")
         self.quality_filters = _as_dict("quality_filters", self.quality_filters)
         self.missingness_summary = _as_dict("missingness_summary", self.missingness_summary)
         self.evidence_tier = _normalize_evidence_tier(self.evidence_tier)
@@ -561,14 +563,10 @@ class ServerValidationRun:
         self.model_adequacy_results = _as_dict(
             "model_adequacy_results", self.model_adequacy_results
         )
-        self.disposition = _enum_value(
-            ValidationDisposition, self.disposition, name="disposition"
-        )
+        self.disposition = _enum_value(ValidationDisposition, self.disposition, name="disposition")
         self.artifact_digest = _require_digest("artifact_digest", self.artifact_digest)
         if self.validation_source != SERVER_VALIDATION_SOURCE:
-            raise CanonicalArtifactError(
-                f"validation_source must be {SERVER_VALIDATION_SOURCE!r}"
-            )
+            raise CanonicalArtifactError(f"validation_source must be {SERVER_VALIDATION_SOURCE!r}")
         if not self.independently_reproduced:
             raise CanonicalArtifactError(
                 "ServerValidationRun requires independently_reproduced=True"

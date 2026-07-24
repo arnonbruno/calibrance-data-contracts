@@ -20,7 +20,6 @@ from calibrance_data_contracts.canonical_artifacts import (
     sha256_hex,
 )
 
-
 DIGEST_A = "a" * 64
 DIGEST_B = "b" * 64
 DIGEST_C = "c" * 64

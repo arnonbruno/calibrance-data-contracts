@@ -381,9 +381,7 @@ def classify_parameter_id(parameter_id: str, source: str) -> AliasRecord:
         )
     record = _forward_index().get((source, parameter_id))
     if record is None:
-        raise UnknownParameterError(
-            f"unknown parameter id {parameter_id!r} for source {source!r}"
-        )
+        raise UnknownParameterError(f"unknown parameter id {parameter_id!r} for source {source!r}")
     return record
 
 
@@ -407,9 +405,7 @@ def migration_rows() -> list[dict[str, Any]]:
 def _product_foundry_differences() -> int:
     """Count semantic disagreements between product (h5) and foundry aliases."""
     h5 = {r.old_id: r.canonical_id for r in build_alias_table() if r.source == "h5"}
-    foundry = {
-        r.old_id: r.canonical_id for r in build_alias_table() if r.source == "foundry"
-    }
+    foundry = {r.old_id: r.canonical_id for r in build_alias_table() if r.source == "foundry"}
     diffs = 0
     for name in set(h5) & set(foundry):
         if h5[name] != foundry[name]:

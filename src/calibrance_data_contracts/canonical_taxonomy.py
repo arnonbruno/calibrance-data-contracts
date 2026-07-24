@@ -65,7 +65,9 @@ def _param(
     deprecated_aliases: dict[str, str] | None = None,
     notes: str = "",
 ) -> CanonicalParameter:
-    pt = profile_type or ("vector" if shape == "vector3" else "matrix" if shape == "matrix" else "scalar")
+    pt = profile_type or (
+        "vector" if shape == "vector3" else "matrix" if shape == "matrix" else "scalar"
+    )
     return CanonicalParameter(
         parameter_id=parameter_id,
         display_name=display_name,

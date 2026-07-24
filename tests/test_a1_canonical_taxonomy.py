@@ -29,7 +29,6 @@ from calibrance_data_contracts.taxonomy_migration import (
     validate_alias_table,
 )
 
-
 REQUIRED_MIGRATIONS = [
     ("h1", "G4_payload.payload_mass_kg", "ur.payload.mass"),
     ("h1", "G2_friction.viscous_nm_s_rad", "ur.joint.friction.viscous"),
