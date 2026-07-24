@@ -11,6 +11,29 @@ from __future__ import annotations
 from .activity_fingerprint import ActivityFingerprint
 from .augmentation import AugmentationConfig, AugmentationRecord
 from .calibration_outcome import CalibrationOutcomeEnvelope
+from .calibration_parameters import (
+    CalibrationParameterBounds,
+    CalibrationParameterGroup,
+    CalibrationParameterPrior,
+    CalibrationParameterSpec,
+    IdentifiedParameterVector,
+    ParameterGroupId,
+    default_ur3e_parameter_groups,
+)
+from .candidate_validation import (
+    DISPOSITION_VALUES,
+    KNOWN_REJECTION_REASONS,
+    REJECTION_COUNTEREXAMPLE,
+    REJECTION_CROSS_TASK,
+    REJECTION_MODEL_INADEQUACY,
+    REJECTION_OVERFITTING,
+    REJECTION_PHYSICAL,
+    REJECTION_UNCERTAINTY,
+    REJECTION_UNDER_CALIBRATED,
+    CandidateDisposition,
+    CandidateValidation,
+    CandidateValidationError,
+)
 from .canonical_artifacts import (
     AUDIT_EVENT_TYPES,
     CANDIDATE_STATUSES,
@@ -43,15 +66,6 @@ from .canonical_artifacts import (
     schema_field_names,
     sha256_hex,
 )
-from .calibration_parameters import (
-    CalibrationParameterBounds,
-    CalibrationParameterGroup,
-    CalibrationParameterPrior,
-    CalibrationParameterSpec,
-    IdentifiedParameterVector,
-    ParameterGroupId,
-    default_ur3e_parameter_groups,
-)
 from .canonical_taxonomy import (
     CANONICAL_BY_ID,
     CANONICAL_PARAMETER_IDS,
@@ -62,41 +76,6 @@ from .canonical_taxonomy import (
     is_canonical_parameter_id,
     parameters_by_group,
     taxonomy_catalogue_dict,
-)
-from .taxonomy_migration import (
-    KNOWN_SOURCES,
-    NON_CALIBRATION_IDS,
-    AliasRecord,
-    AmbiguousAliasError,
-    TaxonomyError,
-    UnknownParameterError,
-    assert_acceptance_gates,
-    build_alias_table,
-    build_taxonomy_manifest,
-    canonical_to_old_id,
-    classify_parameter_id,
-    deserialize_historical_profile,
-    load_taxonomy_manifest,
-    migration_rows,
-    normalize_parameter_id,
-    normalize_parameter_mapping,
-    old_id_to_canonical,
-    validate_alias_table,
-    write_taxonomy_manifest,
-)
-from .candidate_validation import (
-    DISPOSITION_VALUES,
-    KNOWN_REJECTION_REASONS,
-    REJECTION_COUNTEREXAMPLE,
-    REJECTION_CROSS_TASK,
-    REJECTION_MODEL_INADEQUACY,
-    REJECTION_OVERFITTING,
-    REJECTION_PHYSICAL,
-    REJECTION_UNCERTAINTY,
-    REJECTION_UNDER_CALIBRATED,
-    CandidateDisposition,
-    CandidateValidation,
-    CandidateValidationError,
 )
 from .capture_context import (
     CaptureContext,
@@ -138,6 +117,16 @@ from .enums import (
     SourceState,
     SourceType,
     TransformClass,
+)
+from .estimator_protocol import (
+    PRIOR_TYPES,
+    CalibrationEstimator,
+    EstimationContext,
+    EstimationResult,
+    EstimatorProtocolError,
+    ParameterPrior,
+    ParameterSpec,
+    SupportResult,
 )
 from .evidence import (
     CapabilityClaim,
@@ -209,6 +198,27 @@ from .quality_observation import QualityObservation
 from .rights import PERMISSIVE_LICENSE_IDS, DatasetRightsPolicy, TriBool
 from .signals import CanonicalSignals, QualityFlags
 from .task import ActivityFamily, TaskBinding, TaskDefinition, TaskTolerance
+from .taxonomy_migration import (
+    KNOWN_SOURCES,
+    NON_CALIBRATION_IDS,
+    AliasRecord,
+    AmbiguousAliasError,
+    TaxonomyError,
+    UnknownParameterError,
+    assert_acceptance_gates,
+    build_alias_table,
+    build_taxonomy_manifest,
+    canonical_to_old_id,
+    classify_parameter_id,
+    deserialize_historical_profile,
+    load_taxonomy_manifest,
+    migration_rows,
+    normalize_parameter_id,
+    normalize_parameter_mapping,
+    old_id_to_canonical,
+    validate_alias_table,
+    write_taxonomy_manifest,
+)
 from .timestamp_alignment import TimestampAlignment
 from .trajectory import CanonicalTrajectory, EventLabel, MediaStreamRef
 from .twin_model import (
@@ -260,6 +270,15 @@ __all__ = [
     "evidence_field_inventory",
     "schema_field_names",
     "sha256_hex",
+    # estimator_protocol (AUTOCAL-1 A4a)
+    "PRIOR_TYPES",
+    "CalibrationEstimator",
+    "EstimationContext",
+    "EstimationResult",
+    "EstimatorProtocolError",
+    "ParameterPrior",
+    "ParameterSpec",
+    "SupportResult",
     # calibration_parameters
     "CalibrationParameterBounds",
     "CalibrationParameterGroup",
