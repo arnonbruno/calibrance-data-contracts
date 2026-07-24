@@ -40,9 +40,7 @@ def test_fit_rejects_server_estimated_source() -> None:
 
 def test_fit_accepts_caller_supplied_default() -> None:
     assert assert_fit_allowed_source(parameter_source=None) == "caller_supplied"
-    assert (
-        assert_fit_allowed_source(parameter_source="synthetic_demo") == "synthetic_demo"
-    )
+    assert assert_fit_allowed_source(parameter_source="synthetic_demo") == "synthetic_demo"
 
 
 def test_server_estimated_requires_estimator_run_id() -> None:
@@ -131,13 +129,12 @@ def test_high_authority_gate_and_fleet_prior() -> None:
             independently_reproduced=False,
             label="production_validated",
         )
-    assert can_promote_to_fleet_prior_input(
-        server_estimated=False, independently_reproduced=False
-    ) is False
+    assert (
+        can_promote_to_fleet_prior_input(server_estimated=False, independently_reproduced=False)
+        is False
+    )
     with pytest.raises(HonestyMarkingError, match="fleet-prior"):
-        assert_fleet_prior_input_allowed(
-            server_estimated=False, independently_reproduced=True
-        )
+        assert_fleet_prior_input_allowed(server_estimated=False, independently_reproduced=True)
 
 
 def test_max_credibility_and_estimated_by() -> None:

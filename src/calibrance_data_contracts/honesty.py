@@ -90,8 +90,7 @@ def normalize_parameter_source(value: str | ParameterSource | None) -> str:
     raw = value.value if isinstance(value, ParameterSource) else str(value)
     if raw not in ALL_PARAMETER_SOURCES:
         raise HonestyMarkingError(
-            f"unknown parameter_source: {raw!r}; "
-            f"allowed={sorted(ALL_PARAMETER_SOURCES)}"
+            f"unknown parameter_source: {raw!r}; " f"allowed={sorted(ALL_PARAMETER_SOURCES)}"
         )
     return raw
 
@@ -102,8 +101,7 @@ def normalize_validation_source(value: str | ValidationSource | None) -> str:
     raw = value.value if isinstance(value, ValidationSource) else str(value)
     if raw not in ALL_VALIDATION_SOURCES:
         raise HonestyMarkingError(
-            f"unknown validation_source: {raw!r}; "
-            f"allowed={sorted(ALL_VALIDATION_SOURCES)}"
+            f"unknown validation_source: {raw!r}; " f"allowed={sorted(ALL_VALIDATION_SOURCES)}"
         )
     return raw
 
@@ -119,9 +117,7 @@ def validate_server_estimated_claim(
     run_id = (estimator_run_id or "").strip() or None
 
     if server_estimated and not run_id:
-        raise HonestyMarkingError(
-            "server_estimated=true requires a non-empty estimator_run_id"
-        )
+        raise HonestyMarkingError("server_estimated=true requires a non-empty estimator_run_id")
     if source == ParameterSource.SERVER_ESTIMATED.value and not run_id:
         raise HonestyMarkingError(
             "parameter_source=server_estimated requires a non-empty estimator_run_id"
