@@ -914,6 +914,167 @@ class CalibrationObservationSet:
         }
 
 
+# ---------------------------------------------------------------------------
+# B2 — RegressorResult (physics regressor Φ and target y from observations)
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class RegressorResult:
+    """Estimator-ready physics regressor Φ and target y (B2).
+
+    Arrays are stored as nested Python lists so the contracts package stays
+    free of a numpy dependency. Digests hash the numeric contents of Φ and y
+    independently so callers can verify matrix identity without the full
+    provenance envelope.
+    """
+
+    regressor_version: str
+    physics_model_version: str
+    parameter_ids: list[str]
+    phi: list[list[float]]
+    y: list[float]
+    n_samples: int
+    n_joints: int
+    n_parameters: int
+
+    # Provenance
+    observation_set_digest: str
+    parameter_taxonomy_version: str
+    signal_transformations: list[dict]
+    derivative_method: str
+    filter_settings: dict
+
+    # Digests
+    regressor_digest: str = ""
+    target_digest: str = ""
+
+    # Quality / identifiability
+    condition_number: float = 0.0
+    excitation_rank: int = 0
+    n_effective_samples: int = 0
+
+    def __post_init__(self) -> None:
+        self.regressor_version = _require_nonempty("regressor_version", self.regressor_version)
+        self.physics_model_version = _require_nonempty(
+            "physics_model_version", self.physics_model_version
+        )
+        self.parameter_ids = _as_str_list("parameter_ids", self.parameter_ids)
+        if not self.parameter_ids:
+            raise CanonicalArtifactError("parameter_ids must be non-empty")
+        if len(set(self.parameter_ids)) != len(self.parameter_ids):
+            raise CanonicalArtifactError("parameter_ids must be unique")
+
+        self.phi = _as_float_matrix("phi", self.phi)
+        self.y = _as_float_vector("y", self.y)
+        if not self.phi:
+            raise CanonicalArtifactError("phi must be non-empty")
+        n_rows = len(self.phi)
+        n_params = len(self.phi[0])
+        if n_params != len(self.parameter_ids):
+            raise CanonicalArtifactError(
+                f"phi columns {n_params} != len(parameter_ids) {len(self.parameter_ids)}"
+            )
+        for i, row in enumerate(self.phi):
+            if len(row) != n_params:
+                raise CanonicalArtifactError(
+                    f"phi[{i}] length {len(row)} != n_parameters {n_params}"
+                )
+        if len(self.y) != n_rows:
+            raise CanonicalArtifactError(f"y length {len(self.y)} != phi rows {n_rows}")
+
+        self.n_parameters = int(n_params)
+        self.n_samples = int(self.n_samples)
+        self.n_joints = int(self.n_joints)
+        if self.n_joints < 1:
+            raise CanonicalArtifactError("n_joints must be >= 1")
+        if self.n_samples < 1:
+            raise CanonicalArtifactError("n_samples must be >= 1")
+        if n_rows != self.n_samples * self.n_joints:
+            raise CanonicalArtifactError(
+                f"phi rows {n_rows} != n_samples*n_joints "
+                f"({self.n_samples}*{self.n_joints}={self.n_samples * self.n_joints})"
+            )
+
+        self.observation_set_digest = _require_digest(
+            "observation_set_digest", self.observation_set_digest
+        )
+        self.parameter_taxonomy_version = _require_nonempty(
+            "parameter_taxonomy_version", self.parameter_taxonomy_version
+        )
+        self.signal_transformations = _as_dict_list(
+            "signal_transformations", self.signal_transformations
+        )
+        if not self.signal_transformations:
+            raise CanonicalArtifactError(
+                "signal_transformations is required (must propagate B1 transformation log)"
+            )
+        self.derivative_method = _require_nonempty("derivative_method", self.derivative_method)
+        self.filter_settings = _as_dict("filter_settings", self.filter_settings)
+
+        self.n_effective_samples = int(self.n_effective_samples)
+        if self.n_effective_samples < 1:
+            raise CanonicalArtifactError("n_effective_samples must be >= 1")
+        self.excitation_rank = int(self.excitation_rank)
+        if self.excitation_rank < 0:
+            raise CanonicalArtifactError("excitation_rank must be >= 0")
+        self.condition_number = float(self.condition_number)
+        if not (self.condition_number == self.condition_number) or self.condition_number == float(
+            "inf"
+        ):
+            raise CanonicalArtifactError(
+                "condition_number must be finite (singular regressor rejected)"
+            )
+
+        expected_regressor = self.compute_regressor_digest()
+        if not self.regressor_digest:
+            self.regressor_digest = expected_regressor
+        else:
+            self.regressor_digest = _require_digest("regressor_digest", self.regressor_digest)
+            if self.regressor_digest != expected_regressor:
+                raise CanonicalArtifactError(
+                    "regressor_digest does not match phi contents (immutable digest mismatch)"
+                )
+
+        expected_target = self.compute_target_digest()
+        if not self.target_digest:
+            self.target_digest = expected_target
+        else:
+            self.target_digest = _require_digest("target_digest", self.target_digest)
+            if self.target_digest != expected_target:
+                raise CanonicalArtifactError(
+                    "target_digest does not match y contents (immutable digest mismatch)"
+                )
+
+    def compute_regressor_digest(self) -> str:
+        return sha256_hex({"phi": self.phi, "parameter_ids": self.parameter_ids})
+
+    def compute_target_digest(self) -> str:
+        return sha256_hex({"y": self.y})
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "regressor_version": self.regressor_version,
+            "physics_model_version": self.physics_model_version,
+            "parameter_ids": list(self.parameter_ids),
+            "phi": self.phi,
+            "y": self.y,
+            "n_samples": self.n_samples,
+            "n_joints": self.n_joints,
+            "n_parameters": self.n_parameters,
+            "observation_set_digest": self.observation_set_digest,
+            "parameter_taxonomy_version": self.parameter_taxonomy_version,
+            "signal_transformations": self.signal_transformations,
+            "derivative_method": self.derivative_method,
+            "filter_settings": dict(self.filter_settings),
+            "regressor_digest": self.regressor_digest,
+            "target_digest": self.target_digest,
+            "condition_number": self.condition_number,
+            "excitation_rank": self.excitation_rank,
+            "n_effective_samples": self.n_effective_samples,
+        }
+
+
 def evidence_field_inventory() -> dict[str, list[str]]:
     """Acceptance helper: evidence provenance fields per artifact schema."""
     return {
@@ -963,6 +1124,15 @@ def evidence_field_inventory() -> dict[str, list[str]]:
             "quality_mask",
             "dataset_manifest_id",
         ],
+        "RegressorResult": [
+            "regressor_digest",
+            "target_digest",
+            "observation_set_digest",
+            "parameter_taxonomy_version",
+            "signal_transformations",
+            "regressor_version",
+            "physics_model_version",
+        ],
     }
 
 
@@ -991,6 +1161,7 @@ __all__ = [
     "MODEL_ADEQUACY_STATUSES",
     "ModelAdequacyStatus",
     "NumericalCalibrationCandidate",
+    "RegressorResult",
     "SERVER_VALIDATION_SOURCE",
     "SPLIT_STRATEGIES",
     "ServerValidationRun",

@@ -216,6 +216,7 @@ def test_evidence_inventory_covers_all_schemas() -> None:
         "CalibrationWorkflow",
         "AuditEvidenceEntry",
         "CalibrationObservationSet",
+        "RegressorResult",
     }
     for fields in inventory.values():
         assert fields
@@ -272,3 +273,54 @@ def test_observation_set_rejects_digest_mismatch() -> None:
 def test_observation_set_shape_mismatch() -> None:
     with pytest.raises(CanonicalArtifactError, match="sample_times"):
         _observation_set(sample_times=[0.0])
+
+def _regressor_result(**overrides):
+    from calibrance_data_contracts.canonical_artifacts import RegressorResult
+
+    # 2 samples × 6 joints = 12 rows, 2 parameters
+    phi = [[float(i + j) for j in range(2)] for i in range(12)]
+    y = [float(i) * 0.1 for i in range(12)]
+    data = dict(
+        regressor_version="1.0.0",
+        physics_model_version="1.0.0",
+        parameter_ids=["ur.payload.mass", "ur.joint.friction.viscous"],
+        phi=phi,
+        y=y,
+        n_samples=2,
+        n_joints=6,
+        n_parameters=2,
+        observation_set_digest="a" * 64,
+        parameter_taxonomy_version="1.0.0",
+        signal_transformations=[{"step": "unit_conversion", "field": "q"}],
+        derivative_method="savgol_11_3",
+        filter_settings={"butterworth_cutoff_hz": 20.0, "butterworth_order": 4},
+        condition_number=12.5,
+        excitation_rank=2,
+        n_effective_samples=2,
+    )
+    data.update(overrides)
+    return RegressorResult(**data)
+
+
+def test_regressor_result_digest_deterministic() -> None:
+    a = _regressor_result()
+    b = _regressor_result()
+    assert a.regressor_digest == b.regressor_digest
+    assert a.target_digest == b.target_digest
+    assert len(a.regressor_digest) == 64
+    assert len(a.target_digest) == 64
+
+
+def test_regressor_result_requires_transformations() -> None:
+    with pytest.raises(CanonicalArtifactError, match="signal_transformations"):
+        _regressor_result(signal_transformations=[])
+
+
+def test_regressor_result_rejects_singular() -> None:
+    with pytest.raises(CanonicalArtifactError, match="condition_number"):
+        _regressor_result(condition_number=float("inf"))
+
+
+def test_regressor_result_requires_observation_link() -> None:
+    with pytest.raises(CanonicalArtifactError, match="observation_set_digest"):
+        _regressor_result(observation_set_digest="")
