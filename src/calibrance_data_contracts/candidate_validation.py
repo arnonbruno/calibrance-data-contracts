@@ -17,7 +17,6 @@ from calibrance_data_contracts.honesty import (
     assert_no_high_authority_label,
     default_validation_source,
     normalize_validation_source,
-    validate_server_estimated_claim,
 )
 
 
